@@ -1,0 +1,16 @@
+<ul class="nav nav-pills flex-column flex-md-row mb-3 gap-2 gap-lg-0">
+    <li class="nav-item">
+      <a class="nav-link {% if '/settings-training' in request.path %}active{% endif %}" href="{% url 'admin.user.chatbot.dashboard' user_uuid=request.user.uuid  chatbot_id=data.user_chatbots.chat_bot_id view_type='settings-training' %}"><i
+
+          class="mdi mdi-printer-3d mdi-20px me-1"></i> TRAINING</a>
+    </li>
+    <li class="nav-item {% if '/settings-chatbot-appearance/' in request.path %}active{% endif %}">
+      <a class="nav-link {% if '/settings-chatbot-appearance/' in request.path %}active{% endif %}" href="{% url 'admin.user.chatbot.dashboard' user_uuid=request.user.uuid  chatbot_id=data.user_chatbots.chat_bot_id view_type='settings-chatbot-appearance' %}"><i
+          class="mdi mdi-eye-settings mdi-20px me-1"></i> Appearance</a>
+    </li>
+    {% comment %} <li class="nav-item">
+      <a class="nav-link {% if '/settings-chatbot-delete/' in request.path %}active{% endif %}" href="{% url 'admin.user.chatbot.dashboard' user_uuid=request.user.uuid  chatbot_id=data.user_chatbots.chat_bot_id view_type='settings-chatbot-delete' %}"><i
+          class="mdi mdi-robot-confused-outline mdi-20px me-1"></i>Delete</a>
+    </li> {% endcomment %}
+</ul>
+

@@ -1,0 +1,58 @@
+{% extends 'layout/auth_base.html' %}
+{% load static %}
+{% block title %}Admin User  Register{% endblock %}
+{% block content %}
+<div class="auth-main">
+  <div class="auth-wrapper v2">
+    <div class="auth-sidecontent">
+      <img src="{% static '' %}backend/image/authentication/img-auth-sideimg.jpg" alt="images"
+        class="img-fluid img-auth-side">
+    </div>
+    <div class="auth-form">
+      <div class="card my-5">
+        <form method="post" id="signup_process" action="/register/">
+          {% csrf_token %}
+          <div class="card-body">
+          <div class="text-center">
+           <img src="{% static '' %}backend/image/ai_logo.png" alt="img" style="width: 100px;">
+          </div>
+          <div class="saprator my-3">
+          </div>
+          <h4 class="text-center f-w-500 mb-3">Sign up with your email.</h4>
+          <div class="form-group mb-3" style="color: red;">
+          </div>
+          <div class="form-group mb-3">
+            <input type="text" class="form-control" hidden  name="register_route_url" id ="register_route_url" value="/register/">
+            <input type="text" class="form-control" name="username" id="username" 
+            placeholder="Username" value="{{ request.POST.username|default:'' }}" required>          </div>
+          <div class="form-group mb-3">
+            <input type="email" class="form-control" name="email" id="email" 
+            placeholder="Email" value="{{ request.POST.email|default:'' }}" required>
+          <div class="form-group mb-3">
+            <input type="password" class="form-control" name="password1" id="password1" placeholder="Enter your password">
+          </div>
+          <div class="form-group mb-3">
+            <input type="password" class="form-control" name="password2" placeholder="Confirm Password">
+          </div>
+          <div class="d-flex mt-1 justify-content-between">
+            <div class="form-check">
+              <input class="form-check-input input-primary" type="checkbox" name ="agree_terms" id="customCheckc1">
+              <label class="form-check-label text-muted" for="customCheckc1">I agree to all the
+              <a href="https://my-ai.solutions/terms-of-service" target="_blank">Terms & Conditions</a>
+            </label>
+            </div>
+          </div>
+          <div class="d-grid mt-4">
+            <a href="" ><button type="submit" class="btn btn-primary" style="width:100%">Login</button></a>
+          </div>
+          <div class="d-flex justify-content-between align-items-end mt-4">
+            <h6 class="f-w-500 mb-0">Already have an account?</h6>
+            <a href="{% url 'login' %}" class="link-primary">Sign in instead</a>
+          </div>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

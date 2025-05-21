@@ -1,0 +1,35 @@
+<div class="col-lg-4 col-md-6">
+    <div class="mt-3">
+        <!-- Modal -->
+        <form method="post" id="chat_bot_modal_form" action="{% url 'admin.user.chatbot.manage' user_uuid=user_id curd_type=chat_type %}">
+            <div class="modal fade" id="modalCenter" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="modalCenterTitle">{{header}}</h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col mb-4 mt-2">
+                                    <div class="form-floating form-floating-outline">
+                                        {% csrf_token %}
+                                        <input type="hidden" id="chat_id" name="chat_id" value="{{data.chatbot_id}}"/>
+                                        <input type="text" id="chatbotname" class="form-control" name="chatbotname" autofocus minlength="3" value ="{{data.chatbot_name}}" placeholder="Enter Chatbot Name" required />
+                                        <label for="nameWithTitle">Name</label>
+                                    </div>
+                                    <div id="validateText"></div>
+                                    <div id="validatedText"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-label-secondary close_btn" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">{{button_name}}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

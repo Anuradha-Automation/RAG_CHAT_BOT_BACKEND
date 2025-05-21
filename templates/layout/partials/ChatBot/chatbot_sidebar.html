@@ -1,0 +1,25 @@
+{% load humanize %}
+<ul class="email-filter-folders list-unstyled">
+    <li class="d-flex justify-content-between align-items-center mrbt {% if '/document-list/' in request.path %}active{% endif %}">
+        <a href="{% url 'admin.user.chatbot.dashboard' user_uuid=request.user.uuid  chatbot_id=data.user_chatbots.chat_bot_id view_type='document-list' %}" class="d-flex flex-wrap align-items-center">
+
+        <i class="mdi mdi-file-document-outline mdi-20px me-1"></i>
+        <span class="align-middle ms-2">Document</span>
+      </a>
+      <div class="badge bg-label-primary rounded-pill badgecust" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="0 Characters / 0 Chunks" bis_skin_checked="1">0  </div>
+    </li>
+    <li class=" d-flex justify-content-between align-items-center mrbt {% if '/website-list/' in request.path %}active{% endif %}">
+      <a href="{% url 'admin.user.chatbot.dashboard' user_uuid=request.user.uuid  chatbot_id=data.user_chatbots.chat_bot_id view_type='website-list' %}" class="d-flex flex-wrap align-items-center">
+        <i class="mdi mdi-web mdi-20px me-1"></i>
+        <span class="align-middle ms-2">URL</span>
+      </a>
+      <div class="badge bg-label-secondary rounded-pill badgecust" 
+      data-bs-toggle="tooltip" 
+      data-bs-placement="bottom" 
+      data-bs-original-title="{% if website_char_sum %}{{ website_char_sum|intcomma }}{% else %}0{% endif %} Characters / 
+                              {% if data.websites_data.website_chunks_sum %}{{ data.websites_data.website_chunks_sum|intcomma }}{% else %}0{% endif %} Chunks" 
+      bis_skin_checked="1">
+     {{ data.websites_data.web_count }}
+ </div>
+    </li>
+  </ul>

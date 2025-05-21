@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- [Head] start -->
+
+<head>
+    <!-- [Meta] -->
+    {% load static %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="csrf-token" content="">
+    <meta name="description" content="My AI Solutions">
+    <meta name="keywords"
+        content="Bootstrap admin template, Dashboard UI Kit, Dashboard Template, Backend Panel, react dashboard, angular dashboard">
+    <meta name="author" content="Meraphic  LLC">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- [Favicon] icon -->
+    <link rel="icon" href="{% static '' %}backend/image/ai_logo-favicon.png" type="image/x-icon">
+    <!-- [Font] Family -->
+    <link rel="stylesheet" href="{% static '' %}backend/fonts/inter/inter.css" id="main-font-link" />
+    <!-- [Tabler Icons] https://tablericons.com -->
+    <link rel="stylesheet" href="{% static '' %}backend/fonts/tabler-icons.min.css" />
+    <!-- [Feather Icons] https://feathericons.com -->
+    <link rel="stylesheet" href="{% static '' %}backend/fonts/feather.css" />
+    <!-- [Font Awesome Icons] https://fontawesome.com/icons -->
+    <link rel="stylesheet" href="{% static '' %}backend/fonts/fontawesome.css" />
+    <!-- [Material Icons] https://fonts.google.com/icons -->
+    <link rel="stylesheet" href="{% static '' %}backend/fonts/material.css" />
+    <!-- [Template CSS Files] -->
+    <link rel="stylesheet" href="{% static '' %}backend/css/style.css" id="main-style-link" />
+    <link rel="stylesheet" href="{% static '' %}backend/css/style-preset.css" />
+    <link rel="stylesheet" href="{% static '' %}backend/css/custom.css" />
+    <link rel="stylesheet" href="{% static 'backend/css/admin_custom_css.css' %}" />
+    <!-- Icons -->
+    <link rel="stylesheet" href="{% static '' %}backend/vendor/fonts/fontawesome.css" />
+    <link rel="stylesheet" href="{% static '' %}backend/vendor/fonts/materialdesignicons.css" />
+    <!-- Menu waves for no-customizer fix -->
+    <link rel="stylesheet" href="{% static '' %}backend/vendor/libs/node-waves/node-waves.css" />
+    <link href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css" rel="stylesheet">
+
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="{% static '' %}backend/vendor/css/rtl/core.css" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="{% static '' %}backend/vendor/css/rtl/theme-default.css"
+        class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="{% static '' %}backend/css/demo.css" />
+
+    <!-- Vendors CSS -->
+    <link rel="stylesheet" href="{% static 'backend/vendor/libs/perfect-scrollbar/perfect-scrollbar.css' %}" />
+    <link rel="stylesheet" href="{% static 'backend/vendor/libs/typeahead-js/typeahead.css' %}" />
+    <link rel="stylesheet" href="{% static 'backend/vendor/libs/apex-charts/apex-charts.css' %}" />
+    <link rel="stylesheet" href="{% static 'backend/vendor/libs/swiper/swiper.css' %}" />
+    <link rel="stylesheet" href="{% static 'backend/vendor/libs/perfect-scrollbar/perfect-scrollbar.css' %}" />
+    <link rel="stylesheet" href="{% static 'backend/vendor/libs/typeahead-js/typeahead.css' %}" />
+    <link rel="stylesheet" href="{% static 'backend/vendor/libs/quill/katex.css' %}" />
+    <link rel="stylesheet" href="{% static 'backend/vendor/libs/quill/editor.css' %}" />
+    <link rel="stylesheet" href="{% static 'backend/vendor/libs/select2/select2.css' %}" />
+    <link rel="stylesheet" href="{% static 'backend/vendor/libs/spinkit/spinkit.css' %}" />
+
+    <!-- Page CSS -->
+    <link rel="stylesheet" href="{% static 'backend/vendor/css/pages/app-email.css' %}" />
+    <link rel="stylesheet" href="{% static 'backend/vendor/css/pages/cards-analytics.css' %}" />
+    <link rel="stylesheet" href="{% static 'backend/vendor/css/pages/app-chat.css' %}" />
+    <link rel="stylesheet" href="{% static 'backend/vendor/libs/dropzone/dropzone.css' %}" />
+
+    <!-- Page CSS -->
+
+    <link rel="stylesheet" href="{% static 'backend/vendor/css/pages/app-chat.css' %}" />
+    <link rel="stylesheet" href="{% static 'backend/css/chatbot-config.css' %}" />
+    {% block header %}
+    {% endblock %}
+
+</head>
+<!-- [Head] end -->
+<!-- [Body] Start -->
+
+<body data-pc-preset="preset-1" data-pc-sidebar-caption="true" data-pc-direction="ltr" data-pc-theme_contrast=""
+    data-pc-theme="light">
+    <!-- [ Pre-loader ] start -->
+    <div class="loader-bg">
+        <div class="loader-track">
+            <div class="loader-fill"></div>
+        </div>
+    </div>
+    <!-- [ Pre-loader ] End -->
+    <!-- [ Sidebar Menu ] start -->
+    <nav class="pc-sidebar">
+        <div class="navbar-wrapper">
+
+            <div class="m-header">
+                <a href="/" class="b-brand text-primary">
+                    <img src="/static/backend/image/ai_logo.png" style="width: 73px;margin: 0 0 0 74px;">
+                </a>
+            </div>
+            <div class="navbar-content">
+                <ul class="pc-navbar">
+                    <li class="pc-item pc-caption">
+                        <label>Services</label>
+                        <svg class="pc-icon">
+                            <use xlink:href="#custom-text-align-justify-center"></use>
+                        </svg>
+                    <li class="pc-item pc-hasmenu">
+                        <a href="#" class="pc-link">
+                            <span class="pc-micon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                    class="bi bi-menu-up" viewBox="0 0 16 16">
+                                    <path
+                                        d="M7.646 15.854a.5.5 0 0 0 .708 0L10.207 14H14a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2H2a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3.793zM1 9V6h14v3zm14 1v2a1 1 0 0 1-1 1h-3.793a1 1 0 0 0-.707.293l-1.5 1.5-1.5-1.5A1 1 0 0 0 5.793 13H2a1 1 0 0 1-1-1v-2zm0-5H1V3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1zM2 11.5a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 0-1h-8a.5.5 0 0 0-.5.5m0-4a.5.5 0 0 0 .5.5h11a.5.5 0 0 0 0-1h-11a.5.5 0 0 0-.5.5m0-4a.5.5 0 0 0 .5.5h6a.5.5 0 0 0 0-1h-6a.5.5 0 0 0-.5.5" />
+                                </svg>
+                            </span>
+                            <span class="pc-mtext">Chatbot Assistant AI</span>
+                        </a>
+                        <ul class="pc-submenu" style="overflow:auto;">
+                            <li class="pc-item">
+                                <a class="pc-link"
+                                    href="{% url 'admin.user.chatbot' user_uuid=request.user.uuid %}">
+                                    Create Chatbot</a>
+                            </li>
+                            {% for chatbot in global_chatbots.chatbot %}
+                            <li class="pc-item text-capitalize  "><a class="pc-link active" href="{% url 'admin.user.chatbot.dashboard' user_uuid=request.user.uuid  chatbot_id=chatbot.chatbot_id view_type='document-list' %}">{{chatbot.chatbot_name}}</a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    </li>
+                    <div class="card pc-user-card">
+                        <div class="card-body">
+                            <a class="" href="{% url 'admin.profile.setting.profile' user_uuid=request.user.uuid %}">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <img src="{% static 'backend/image/pp.jpg' %}" alt="user-image"
+                                            class="user-avtar wid-45 rounded-circle" />
+                                    </div>
+                                    <div class="flex-grow-1 ms-3 me-2">
+                                        <h6 class="mb-0 text-capitalize">Settings/Billing</h6>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </ul>
+                <footer style="position: fixed;padding: 10px 10px 0px 10px;bottom: 0; background: #f8f9fa;">
+                    <div id="user-info" style="margin: 0 0 20px 33px;">
+                        <a href="{% url 'admin.profile.setting.profile' user_uuid=request.user.uuid %}">
+                            <img src="{{ request.user.profile_url|default:request.user.profile_pic.url }}" alt="user-image" class="user-avtar"
+                                style="border: 1px solid #9f9f9f;width: 44px; height: 44px; border-radius: 58px; color: var(--pc-header-color); overflow: hidden;" />
+                        </a> 
+                        <a href="{% url 'logout' %}">
+                            <img src="{% static 'backend/image/off.png' %}" alt="off" class="user-avtar"
+                                style="border: 1px solid #9f9f9f;width: 44px; height: 44px; border-radius: 58px; color: var(--pc-header-color); overflow: hidden;" />
+                        </a>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </nav>
+    <div class="pc-container">
+        <div class="pc-content">
+
+            <div class="row">
+                {% block content %}
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+    {% for message in messages %}
+        <div class="django-message" data-text="{{ message }}" data-type="{{ message.tags }}"></div>
+    {% endfor %}
+</body>
+<!-- [Body] end -->
+
+<!-- [Page Specific JS] start -->
+
+<!-- [Page Specific JS] end -->
+<!-- Required Js -->
+
+
+<script src="{% static '' %}backend/js/plugins/popper.min.js"></script>
+<script src="{% static '' %}backend/js/plugins/simplebar.min.js"></script>
+<script src="{% static '' %}backend/js/plugins/bootstrap.min.js"></script>
+<script src="{% static '' %}backend/js/fonts/custom-font.js"></script>
+<script src="{% static '' %}backend/js/pcoded.js"></script>
+<script src="{% static '' %}backend/js/plugins/feather.min.js"></script>
+<script src="{% static 'backend/vendor/js/helpers.js' %}"></script>
+<script src="{% static 'backend/js/config.js' %}"></script>
+<!-- Core JS -->
+<!-- build:js assets/vendor/js/core.js -->
+<script src="{% static 'backend/vendor/libs/jquery/jquery.js' %}"></script>
+<script src="{% static 'backend/js/jquery.validate.min.js' %}"></script>
+<script src="{% static 'backend/vendor/libs/popper/popper.js' %}"></script>
+<script src="{% static 'backend/vendor/libs/perfect-scrollbar/perfect-scrollbar.js' %}"></script>
+<script src="{% static 'backend/vendor/libs/node-waves/node-waves.js' %}"></script>
+<script src="{% static 'backend/vendor/libs/hammer/hammer.js' %}"></script>
+<script src="{% static 'backend/vendor/libs/i18n/i18n.js' %}"></script>
+<script src="{% static 'backend/vendor/libs/typeahead-js/typeahead.js' %}"></script>
+<script src="{% static 'backend/vendor/js/menu.js' %}"></script>
+<!-- endbuild -->
+
+<script src="{% static 'backend/vendor/libs/apex-charts/apexcharts.js' %}"></script>
+<script src="{% static 'backend/vendor/libs/swiper/swiper.js' %}"></script>
+<script src="{% static 'backend/vendor/libs/quill/katex.js' %}"></script>
+<script src="{% static 'backend/vendor/libs/quill/quill.js' %}"></script>
+<script src="{% static 'backend/vendor/libs/select2/select2.js' %}"></script>
+<script src="{% static 'backend/vendor/libs/block-ui/block-ui.js' %}"></script>
+<!-- Core CSS -->
+<link rel="stylesheet" href="{% static 'backend/vendor/css/rtl/core.css' %}" class="template-customizer-core-css" />
+<link rel="stylesheet" href="{% static 'backend/vendor/css/rtl/theme-default.css' %}"
+    class="template-customizer-theme-css" />
+<link rel="stylesheet" href="{% static 'backend/css/demo.css' %}" />
+
+<!-- Vendors CSS -->
+<link rel="stylesheet" href="{% static 'backend/vendor/libs/perfect-scrollbar/perfect-scrollbar.css' %}" />
+<link rel="stylesheet" href="{% static 'backend/vendor/libs/typeahead-js/typeahead.css' %}" />
+<link rel="stylesheet" href="{% static 'backend/vendor/libs/apex-charts/apex-charts.css' %}" />
+<link rel="stylesheet" href="{% static 'backend/vendor/libs/swiper/swiper.css' %}" />
+
+<!-- Page CSS -->
+<link rel="stylesheet" href="{% static 'backend/vendor/css/pages/cards-statistics.css' %}" />
+<link rel="stylesheet" href="{% static 'backend/vendor/css/pages/cards-analytics.css' %}" />
+<link rel="stylesheet" href="{% static 'backend/vendor/css/pages/app-chat.css' %}" />
+<link rel="stylesheet" href="{% static 'backend/vendor/libs/node-waves/node-waves.css' %}" />
+<link rel="stylesheet" href="{% static 'backend/vendor/libs/typeahead-js/typeahead.css' %}" />
+<link rel="stylesheet" href="{% static 'backend/vendor/libs/toastr/toastr.css' %}" />
+<link rel="stylesheet" href="{% static 'backend/vendor/libs/animate-css/animate.css' %}" />
+
+<script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+<script src="{% static 'backend/vendor/libs/block-ui/block-ui.js' %}"></script>
+
+<!-- Main JS -->
+<script src="{% static 'backend/js/main.js' %}"></script>
+
+<!-- Page Refresh JS -->
+<script src="{% static 'backend/js/chat_bot_tables.js' %}"></script>
+
+<!-- Page JS -->
+<script src="{% static 'backend/js/app-email.js' %}"></script>
+<script src="{% static 'backend/js/extended-ui-blockui.js' %}"></script>
+<script src="{% static 'backend/js/forms-file-upload-new.js' %}"></script>
+<!-- Core JS -->
+<!-- build:js assets/vendor/js/core.js -->
+<script src="{% static 'backend/vendor/libs/jquery/jquery.js' %}"></script>
+<script src="{% static 'backend/vendor/libs/popper/popper.js' %}"></script>
+<script src="{% static 'backend/vendor/libs/perfect-scrollbar/perfect-scrollbar.js' %}"></script>
+<script src="{% static 'backend/vendor/libs/node-waves/node-waves.js' %}"></script>
+
+<script src="{% static 'backend/vendor/libs/hammer/hammer.js' %}"></script>
+<script src="{% static 'backend/vendor/libs/i18n/i18n.js' %}"></script>
+<script src="{% static 'backend/vendor/libs/typeahead-js/typeahead.js' %}"></script>
+
+<script src="{% static 'backend/vendor/js/menu.js' %}"></script>
+<!-- endbuild -->
+
+<!-- Vendors JS -->
+<script src="{% static 'backend/vendor/libs/bootstrap-maxlength/bootstrap-maxlength.js' %}"></script>
+
+<!-- Main JS -->
+<script src="{% static 'backend/js/main.js' %}"></script>
+    <script src="{% static 'backend/packeges/jquery.min.js' %}"></script>
+    <script src="{% static 'backend/packeges/jquery.validate.min.js' %}"></script>
+    <script src="{% static 'backend/packeges/additional-methods.min.js' %}"></script>
+    {% comment %} <script src="{% static 'backend/js/custom.js' %}"></script> {% endcomment %}
+    <script src="{% static 'backend/js/commonjs.js' %}"></script>
+{% block script %}
+{% endblock %}
+
+
+</html>

@@ -1,0 +1,538 @@
+{% extends 'layout/base.html' %}
+{% load static %}
+{% block title %}Admin Create Chat bot{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'backend/css/chatbot/chatbot-ui.css' %}" />
+<style>
+  /* Chatbot pattern image */
+  {% if data.cfg.chatbot_background_pattern  %}
+    .chatbot-pattern {
+    background-image: url({{ data.cfg.chatbot_background_pattern.url }}) !important;
+  }
+  {% endif %}
+  
+  .top-bar-background {
+      background-color: {{ data.cfg.top_bar_background }} !important;
+  }
+  
+  .chatbot-background {
+    background-color : {{data.cfg.chatbot_background_color}} ;
+  }
+  
+  .chatbot-msg-background {
+      background-color: {{ data.cfg.bot_message_background }};
+      height: auto;
+      width: auto;
+          border-radius: 0 10px 10px 10px;
+  }
+  
+  .user-msg-background {
+      background-color: {{ data.cfg.user_message_background }};
+      height: auto;
+      width: auto;
+          border-radius: 10px 0px 10px 10px;
+  }
+  #chat-display-name{
+    color: {{ data.cfg.top_bar_textcolor }};
+  }
+  
+  
+  .chatbot-font-family {
+        font-family: {{ data.cfg.font_family }} !important;
+  }
+  
+  .chatbot-font-size {
+        font-family: {{ data.cfg.font_size }} !important;
+  }
+  
+  #chatbot-initial-messages{
+    color: {{ data.cfg.bot_message_color }} !important;
+    padding: 20px;
+    font-size:15px;
+    font-weight: 400;
+    font-weight: 400;
+  }
+  .user-msg-color{
+    color: {{  data.cfg.user_message_color }};
+     padding: 20px;
+     font-size:15px;
+     font-weight: 400;
+  }
+
+
+#send-button {
+              background-color: {{ data.cfg.chatbot_theme }} #1ce34e;;
+              color: #060606;
+              padding: 8px 15px;
+              border: none;
+              border-radius: 5px;
+              cursor: pointer;
+          width: 160px;
+          height: 60px;
+          }
+          .bottom-tab{
+          height: auto;
+          padding: 5px 5px 5px 5px;
+              background-color: rgb(175, 174, 168);
+              color: #000;
+           display: flex;
+          justify-content: flex-start;
+          }
+ 
+      </style>
+      {% include 'layout/partials/ChatBot/chat-head.html' %}
+    {% include 'layout/partials/ChatBot/chatbot-settings-menu.html' %}
+    <div class="row">
+        <div class="col-md-12">
+          <div class="card mb-4">
+            <h4 class="card-header">Appearance</h4>        
+            <!-- Appearance -->
+            <div class="card-body">
+              <div class="row">
+                <div class="col-sm">
+      
+                  <form action="{% url 'admin.user.chatbot.hendle-action' user_uuid=request.user.uuid  chatbot_id=data.user_chatbots.chat_bot_id action_type='chatbot-appearance' %}" method="post" enctype="multipart/form-data" id="chatbot-form">
+                    {% csrf_token %}
+                    <div class="form-floating form-floating-outline mb-4">
+                      <input type="text" id="display-name" class="form-control form-control-sm" placeholder="Enter display name" name="display-name"
+                             value="{% if cfg.display_name %}{{ cfg.display_name }}{% else%}John{% endif %}"  maxlength="40">
+                      <label for="display-name">Display Name</label>
+                    </div>
+                    <div class="form-floating form-floating-outline mb-4">
+                      <textarea id="initial-messages" class="form-control form-control-sm"
+                                placeholder="Enter your initial message" rows="1" name="initial-messsage"
+                                maxlength="255">{% if data.cfg.initial_message %}{{ data.cfg.initial_message }}{% else%}Hi! What can I help with you ?{% endif %}</textarea>
+                      <label for="initial-messages">Initial message</label>
+                    </div>
+      
+                       <div class="form-floating form-floating-outline mb-4">
+      
+      
+                        <input type="text" id="footer_name" class="form-control form-control-sm" placeholder="Enter display name" name="footer_name"
+                               value="{% if data.cfg.footer_name %}{{ data.cfg.footer_name }}{% else%}Powered by My AI Solutions{% endif %}" maxlength="150">
+                        <label for="display-name">Footer Text </label>
+                      </div>
+      
+                    <!-- Chatbot color changes -->
+                    <div class="row mb-4">
+                      <div class="col-12">
+                        <div class="card">
+                          <div class="d-flex justify-content-between">
+                            <span class="card-header h6">Chatbot Color Customization</span>
+                            <span class="cursor-pointer color-reset d-flex align-items-center me-3" id="theme-reset"><i class="mdi mdi-restore text-danger"></i></span>
+                          </div>
+                          <div class="card-body">
+                            <!-- Theme Color -->
+                            <div class="row">
+                              <div class="col-6 mb-4">
+                                <p class="mb-2">
+                                  <small>Theme color</small>
+                                </p>
+                                <div class="input-group">
+                                  <div class="input-group-text color-fields form-check mb-0">
+                                    <input class="form-check-input m-auto color-field-helper" type="color" value="{% if data.cfg.chatbot_theme %}{{ data.cfg.chatbot_theme }}{% else%}#8d54a2{% endif %}"
+                                           id="chatbot-theme-input" name="chatbot-theme-input">
+                                  </div>
+                                  <input type="text" class="form-control" id="theme-color"
+                                         placeholder="Select your theme color" value="{% if data.cfg.chatbot_theme %}{{ data.cfg.chatbot_theme }}{% else%}#8d54a2{% endif %}">
+                                </div>
+                              </div>
+                              <div class="col-6 mb-4">
+                                <p class="mb-2">
+                                  <small>Chatbot Background Color</small>
+                                </p>
+                                <div class="input-group">
+                                  <div class="input-group-text color-fields form-check mb-0">
+                                    <input class="form-check-input m-auto color-field-helper" type="color" value="{% if data.cfg.chatbot_background_color %}{{ data.cfg.chatbot_background_color }}{% else%}#e6e6e6{% endif %}" name="chatbot-bg-color-input"
+                                           id="chatbot-bg-color-input" connecter="chatbot-bg-color">
+                                  </div>
+                                  <input type="text" class="form-control" id="chatbot-bg-color" value="{% if cfg.chatbot_background_color %}{{ data.cfg.chatbot_background_color }}{% else%}#e6e6e6{% endif %}"
+                                         placeholder="Select your Chatbot background color">
+                                  <label for="chatbot-bg-color"></label>
+                                  <span class="input-group-text cursor-pointer color-reset d-none"><i class="mdi mdi-restore text-danger"></i></span>
+                                </div>
+                              </div>
+                            </div>
+                            <!-- Theme Color -->
+          
+                            <!-- Top color -->
+                            <div class="row">
+                              <div class="col-6 mb-4">
+                                <p class="mb-2">
+                                  <small>Top bar background color</small>
+                                </p>
+                                <div class="input-group">
+                                  <div class="input-group-text color-fields form-check mb-0">
+                                    <input class="form-check-input m-auto color-field-helper" type="color" value="{% if data.cfg.top_bar_background %}{{ data.cfg.top_bar_background }}{% else%}#8d54a2{% endif %}" name="top-bar-background-color-input"
+                                           id="top-bar-background-color-input" connecter="top-bar-background-color">
+                                  </div>
+                                  <input type="text" class="form-control" id="top-bar-background-color" value="{% if data.cfg.top_bar_background %}{{ data.cfg.top_bar_background }}{% else%}#8d54a2{% endif %}"
+                                         placeholder="Select your top background color">
+                                  <label for="top-bar-background-color"></label>
+                                  <span class="input-group-text cursor-pointer color-reset d-none"><i class="mdi mdi-restore text-danger"></i></span>
+                                </div>
+                              </div>
+                              <div class="col-6 mb-4">
+                                <p class="mb-2">
+                                  <small>Top bar text color</small>
+                                </p>
+                                <div class="input-group">
+                                  <div class="input-group-text color-fields form-check mb-0">
+                                    <input class="form-check-input m-auto color-field-helper" type="color" value="{% if data.cfg.top_bar_textcolor %}{{ data.cfg.top_bar_textcolor }}{% else%}#000001{% endif %}" name="top-bar-text-color-input"
+                                           id="top-bar-text-color-input" connecter="top-bar-text-color">
+                                  </div>
+                                  <input type="text" class="form-control" id="top-bar-text-color"  value="{% if data.cfg.top_bar_textcolor %}{{ data.cfg.top_bar_textcolor }}{% else %}#000001{% endif %}"
+                                         placeholder="Select your top text color">
+                                  <label for="top-bar-text-color"></label>
+                                  <span class="input-group-text cursor-pointer color-reset d-none"><i class="mdi mdi-restore text-danger"></i></span>
+                                </div>
+                              </div>
+                            </div>
+                            <!-- Top color -->
+      
+                            <!-- Chatbot color -->
+                            <div class="row">
+                              <div class="col-6 mb-4">
+                                <p class="mb-2">
+                                  <small>Chatbot Message background color</small>
+                                </p>
+                                <div class="input-group">
+                                  <div class="input-group-text color-fields form-check mb-0">
+                                    <input class="form-check-input m-auto color-field-helper" type="color" value="{% if data.cfg.bot_message_background %}{{ data.cfg.bot_message_background }}{% else%}#ffffff{% endif %}" name="chatbot-msg-background-color-input"
+                                           id="chatbot-msg-background-color-input" connecter="chatbot-msg-background-color">
+                                  </div>
+                                  <input type="text" class="form-control" id="chatbot-msg-background-color" value="{% if data.cfg.bot_message_background %}{{ data.cfg.bot_message_background }}{% else%}#ffffff{% endif %}"
+                                         placeholder="Select chatbot msg background color">
+                                  <label for="chatbot-msg-background-color"></label>
+                                  <span class="input-group-text cursor-pointer color-reset d-none"><i class="mdi mdi-restore text-danger"></i></span>
+                                </div>
+                              </div>
+                              <div class="col-6 mb-4">
+                                <p class="mb-2">
+                                  <small>Chatbot Message text color</small>
+                                </p>
+                                <div class="input-group">
+                                  <div class="input-group-text color-fields form-check mb-0">
+                                    <input class="form-check-input m-auto color-field-helper" type="color" value="{% if data.cfg.bot_message_color %}{{ data.cfg.bot_message_color }}{% else%}#9797a4{% endif %}" name="chatbot-msg-text-color-input"
+                                           id="chatbot-msg-text-color-input" connecter="chatbot-msg-text-color">
+                                  </div>
+                                  <input type="text" class="form-control" id="chatbot-msg-text-color" value="{% if data.cfg.bot_message_color %}{{ data.cfg.bot_message_color }}{% else%}#9797a4{% endif %}"
+                                         placeholder="Select Chatbot text color">
+                                  <label for="chatbot-msg-text-color"></label>
+                                  <span class="input-group-text cursor-pointer color-reset d-none"><i class="mdi mdi-restore text-danger"></i></span>
+                                </div>
+                              </div>
+                            </div>
+                            <!-- Chatbot color -->
+                            <!-- User color -->
+                            <div class="row">
+                              <div class="col-6 mb-4">
+                                <p class="mb-2">
+                                  <small>User's Message background color</small>
+                                </p>
+                                <div class="input-group">
+                                  <div class="input-group-text color-fields form-check mb-0">
+                                    <input class="form-check-input m-auto color-field-helper" type="color" value="{% if data.cfg.user_message_background %}{{ data.cfg.user_message_background }}{% else%}#ffffff{% endif %}" name="user-msg-background-color-input"
+                                           id="user-msg-background-color-input" connecter="user-msg-background-color">
+                                  </div>
+                                  <input type="text" class="form-control" id="user-msg-background-color" value="{% if data.cfg.user_message_background %}{{ data.cfg.user_message_background }}{% else%}#ffffff{% endif %}"
+                                         placeholder="Select user's msg background color">
+                                  <label for="user-msg-background-color"></label>
+                                  <span class="input-group-text cursor-pointer color-reset d-none"><i class="mdi mdi-restore text-danger"></i></span>
+                                </div>
+                              </div>
+                              <div class="col-6 mb-4">
+                                <p class="mb-2">
+                                  <small>User's Message text color</small>
+                                </p>
+                                <div class="input-group">
+                                  <div class="input-group-text color-fields form-check mb-0">
+                                    <input class="form-check-input m-auto color-field-helper" type="color" value="{% if data.cfg.user_message_color %}{{ data.cfg.user_message_color }}{% else%}#000001{% endif %}" name="user-msg-text-color-input"
+                                           id="user-msg-text-color-input" connecter="user-msg-text-color">
+                                  </div>
+                                  <input type="text" class="form-control" id="user-msg-text-color" value="{% if data.cfg.user_message_color %}{{ data.cfg.user_message_color }}{% else%}#000001{% endif %}"
+                                         placeholder="Select user's text color">
+                                  <label for="user-msg-text-color"></label>
+                                  <span class="input-group-text cursor-pointer color-reset d-none"><i class="mdi mdi-restore text-danger"></i></span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- Chatbot color changes -->
+                    <!-- Chatbot images -->
+                    <div class="row mb-4">
+                      <div class="col-12">
+                        <div class="card">
+                          <h5 class="card-header h6">Chatbot Images</h5>
+                          <div class="card-body">
+      
+                            <div class="row">
+                              <div class="d-flex flex-wrap mb-3 gap-2">
+                                <div class="col-12">
+                                  <div class="mb-3">
+                                    <label for="formFile" class="form-label">Chatbot Profile</label>
+                                    <input type="file" class="form-control" id="chatbot-image" accept="image/png, image/gif, image/jpeg" name="chatbot-image">
+                                    <input class="form-control" type="hidden" id="chatbot-image-url" name="chatbot-image-url" value="{% if data.cfg.chatbot_image is None %}{% static 'backend/img/avatars/1.png' %}{% endif %}">
+                                  </div>
+                                </div>
+                              </div>
+                              <p class="mb-2">
+                                <small>Select Chatbot Profile</small>
+                              </p>
+                              <div class="d-flex flex-wrap mb-3 gap-2" id="image-list-1">
+                                <button type="button" id="chatbot-image-remove" class="btn btn-icon rounded-pill btn-label-pinterest waves-effect align-self-center mt-1">
+                                  <i class="tf-icons mdi mdi-restore" data-bs-toggle="tooltip" data-bs-placement="top"
+                                     data-bs-custom-class="tooltip-dark" data-bs-original-title="Click to Change Default"></i>
+                                </button>
+      
+                                <div class="avatar d-inline-flex position-relative me-3">
+                                  <img class="rounded-circle drag-item cursor-pointer" src="{% static 'backend/image/user/avatar-1.jpg' %}"
+                                       alt="avatar" height="70" width="70" data-bs-toggle="tooltip" data-bs-placement="top"
+                                       data-bs-custom-class="tooltip-dark" data-bs-original-title="Click to Change Profile">
+                                </div>
+      
+                                <div class="avatar d-inline-flex position-relative me-3">
+                                  <img class="rounded-circle drag-item cursor-pointer" src="{% static 'backend/image/user/avatar-2.jpg' %}"
+                                       alt="avatar" height="70" width="70" data-bs-toggle="tooltip" data-bs-placement="top"
+                                       data-bs-custom-class="tooltip-dark" data-bs-original-title="Click to Change Profile">
+                                </div>
+      
+                                <div class="avatar d-inline-flex position-relative me-3">
+                                  <img class="rounded-circle drag-item cursor-pointer" src="{% static 'backend/image/user/avatar-3.jpg' %}"
+                                       alt="avatar" height="70" width="70" data-bs-toggle="tooltip" data-bs-placement="top"
+                                       data-bs-custom-class="tooltip-dark" data-bs-original-title="Click to Change Profile">
+                                </div>
+      
+                                <div class="avatar d-inline-flex position-relative me-3" id="default-profile">
+                                  <img class="rounded-circle drag-item cursor-pointer"  src="{% static 'backend/image/user/avatar-4.jpg' %}"
+                                       alt="avatar" height="70" width="70" data-bs-toggle="tooltip" data-bs-placement="top"
+                                       data-bs-custom-class="tooltip-dark" data-bs-original-title="Click to Change Profile">     
+                                </div>
+      
+                                <div class="avatar d-inline-flex position-relative me-3">
+                                  <img class="rounded-circle drag-item cursor-pointer" src="{% static 'backend/image/user/avatar-5.jpg' %}"
+                                       alt="avatar" height="70" width="70" data-bs-toggle="tooltip" data-bs-placement="top"
+                                       data-bs-custom-class="tooltip-dark" data-bs-original-title="Click to Change Profile">
+                                </div>
+      
+                                <div class="avatar d-inline-flex position-relative me-3">
+                                  <img class="rounded-circle drag-item cursor-pointer" src="{% static 'backend/image/user/avatar-6.jpg' %}"
+                                      alt="avatar" height="70" width="70" data-bs-toggle="tooltip" data-bs-placement="top"
+                                      data-bs-custom-class="tooltip-dark" data-bs-original-title="Click to Change Profile">
+                                </div>
+      
+                              </div>
+                            </div>
+                            <!-- Chatbot background pattern // -->
+                            <div class="row">
+                              <div class="col-12">
+                                <div class="mb-3">
+                                  <label for="formFile" class="form-label">Launcher Icon</label>
+                                  <input class="form-control" type="file" id="chatbot-launcher-icon" name="chatbot-launcher-icon"  accept=".jpg,.jpeg,.png,.gif" >
+                                  <input class="form-control" type="hidden" id="chatbot-launcher-icon-url" name="chatbot-launcher-icon-url">
+                                </div>
+                              </div>
+                              <p class="mb-2">
+                                <small>Select Launcher Icon</small>
+                              </p>
+                              <div class="col-12">
+                                <div class="d-flex flex-wrap gap-2" id="image-list-3">
+                                  <button type="button" id="chatbot-launcher-icon-remove" class="btn btn-icon rounded-pill btn-label-pinterest waves-effect align-self-center mt-1">
+                                    <i class="tf-icons mdi mdi-restore" data-bs-toggle="tooltip" data-bs-placement="top"
+                                       data-bs-custom-class="tooltip-dark" data-bs-original-title="Click to Change Default"></i>
+                                  </button>
+                                  <div class="avatar d-inline-flex position-relative me-3">
+                                    <img class="rounded-circle chatbot-launcher-icon cursor-pointer" src="{% static 'backend/image/launcher_icon/avatar-1.png' %}" src_data="{% static 'backend/img/launcher_icon/avatar-1.png' %}" alt="avatar" height="70" width="70" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="tooltip-dark" data-bs-original-title="Click to Change pattern">
+                                  </div>
+      
+                                  <div class="avatar d-inline-flex position-relative me-3">
+                                    <img class="rounded-circle chatbot-launcher-icon cursor-pointer" src="{% static 'backend/image/launcher_icon/avatar-2.png' %}" src_data="{% static 'backend/img/launcher_icon/avatar-2.png' %}" alt="avatar" height="70" width="70" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="tooltip-dark" data-bs-original-title="Click to Change pattern">
+                                  </div>
+      
+                                  <div class="avatar d-inline-flex position-relative me-3">
+                                    <img class="rounded-circle chatbot-launcher-icon cursor-pointer" src="{% static 'backend/image/launcher_icon/avatar-3.png' %}" src_data="{% static 'backend/img/launcher_icon/avatar-3.png' %}" alt="avatar" height="70" width="70" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="tooltip-dark" data-bs-original-title="Click to Change pattern">
+                                  </div>
+      
+                                  <div class="avatar d-inline-flex position-relative me-3">
+                                    <img class="rounded-circle chatbot-launcher-icon cursor-pointer" src="{% static 'backend/image/launcher_icon/avatar-4.png' %}" src_data="{% static 'backend/img/launcher_icon/avatar-4.png' %}" alt="avatar" height="70" width="70" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="tooltip-dark" data-bs-original-title="Click to Change pattern">
+                                  </div>
+      
+                                  <div class="avatar d-inline-flex position-relative me-3">
+                                    <img class="rounded-circle chatbot-launcher-icon cursor-pointer" src="{% static 'backend/image/launcher_icon/avatar-5.png' %}" src_data="{% static 'backend/img/launcher_icon/avatar-5.png' %}" alt="avatar" height="70" width="70" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="tooltip-dark" data-bs-original-title="Click to Change pattern">
+                                  </div>
+      
+                                </div>
+                              </div>
+                            </div>
+                            <!-- Chatbot launcher icon // -->
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- Chatbot images -->
+    
+                    <!-- // Chatbot Position -->
+                    <div class="row mb-4">
+                      <div class="col-12">
+                        <div class="card">
+                          <h5 class="card-header h6">Chatbot Size & Positions</h5>
+                          <div class="card-body">
+                            <div class="d-flex flex-wrap justify-content-start gap-5 mt-3">
+                              <div>
+                                <div class="m-0 pb-3 template-customizer-style w-100">
+                                  <label for="popup-notification" class="form-label d-block template-customizer-t-style_label">Popup Notifcations</label>
+                                  <label class="switch switch-sm">
+                                    <span class="switch-label template-customizer-t-style_switch_light">Off</span>
+                                    <input type="checkbox" class="switch-input" id="popup-notification" name="popup-notification" {% if  data.cfg.show_popup_notification == True %}checked{% endif %} />
+                                    <span class="switch-toggle-slider">
+                                        <span class="switch-on"></span> <span class="switch-off"></span>
+                                      </span>
+                                    <span class="switch-label template-customizer-t-style_switch_dark">On</span>
+                                  </label>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <h5 class="card-header h6">Chatbot Font & Size</h5>
+                          <div class="card-body">
+                            <div class="d-flex flex-wrap mb-3 gap-5">
+                              <div>
+                                <label for="chatbot-font-style" class="form-label">Chatbot Font Style</label>
+                                <select id="chatbot-font-style" name="chatbot-font-style" class="form-select form-select-sm">
+                                  <option {% if  data.cfg.font_family == "Arial, Helvetica, sans-serif" %}selected{% endif %} value="Arial, Helvetica, sans-serif">Arial</option>
+                                  <option {% if  data.cfg.font_family == "Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif" %}selected{% endif %} value="Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif">Default</option>
+                                  <option {% if  data.cfg.font_family == "Arial Black, Gadget, sans-serif" %}selected{% endif %} value="Arial Black, Gadget, sans-serif">Arial Black</option>
+                                  <option {% if  data.cfg.font_family == "Comic Sans MS, cursive, sans-serif" %}selected{% endif %} value="Comic Sans MS, cursive, sans-serif">Comic Sans MS</option>
+                                  <option {% if  data.cfg.font_family == "Courier New, Courier, monospace" %}selected{% endif %} value="Courier New, Courier, monospace">Courier New</option>
+                                  <option {% if  data.cfg.font_family == "Georgia, serif" %}selected{% endif %} value="Georgia, serif">Georgia</option>
+                                  <option {% if cfg.font_family == "Impact, Charcoal, sans-serif" %}selected{% endif %} value="Impact, Charcoal, sans-serif">Impact</option>
+                                  <option {% if  data.cfg.font_family == "Lucida Console, Monaco, monospace" %}selected{% endif %} value="Lucida Console, Monaco, monospace">Lucida Console</option>
+                                  <option {% if  data.cfg.font_family == "Lucida Sans Unicode, Lucida Grande, sans-serif" %}selected{% endif %} value="Lucida Sans Unicode, Lucida Grande, sans-serif">Lucida Sans Unicode</option>
+                                  <option {% if  data.cfg.font_family == "MS Sans Serif, Geneva, sans-serif" %}selected{% endif %} value="MS Sans Serif, Geneva, sans-serif">MS Sans Serif</option>
+                                  <option {% if  data.cfg.font_family == "MS Serif, New York, sans-serif" %}selected{% endif %} value="MS Serif, New York, sans-serif">MS Serif</option>
+                                  <option {% if  data.cfg.font_family == "Palatino Linotype, Book Antiqua, Palatino, serif" %}selected{% endif %} value="Palatino Linotype, Book Antiqua, Palatino, serif">Palatino Linotype</option>
+                                  <option {% if  data.cfg.font_family == "Tahoma, Geneva, sans-serif" %}selected{% endif %} value="Tahoma, Geneva, sans-serif">Tahoma</option>
+                                  <option {% if  data.cfg.font_family == "Times New Roman, Times, serif" %}selected{% endif %} value="Times New Roman, Times, serif">Times New Roman</option>
+                                  <option {% if  data.cfg.font_family == "Trebuchet MS, Helvetica, sans-serif" %}selected{% endif %} value="Trebuchet MS, Helvetica, sans-serif">Trebuchet MS</option>
+                                  <option {% if  data.cfg.font_family == "Verdana, Geneva, sans-serif" %}selected{% endif %} value="Verdana, Geneva, sans-serif">Verdana</option>
+                                </select>
+                              </div>
+                              <div>
+                                <label for="chatbot-font-size" class="form-label">Chatbot Font Size </label>
+                                <select id="chatbot-font-size" name="chatbot-font-size" class="form-control form-control-sm">
+                                  <option value="10" {% if  data.cfg.font_size == 10 %}selected{% endif %}>10 px</option>
+                                  <option value="12" {% if  data.cfg.font_size == 12 %}selected{% endif %}>12 px</option>
+                                  <option value="14" {% if  data.cfg.font_size == 14 %}selected{% else %}selected{% endif %}>14 px</option>
+                                  <option value="16" {% if  data.cfg.font_size == 16 %}selected{% endif %}>16 px</option>
+                                  <option value="18" {% if  data.cfg.font_size == 18 %}selected{% endif %}>18 px</option>
+                                  <option value="20" {% if  data.cfg.font_size == 20 %}selected{% endif %}>20 px</option>
+                                </select>
+                              </div>
+                            </div>
+                            <div class="pt-4">
+                              <button type="submit" class="btn btn-primary me-sm-3 me-1 waves-effect waves-light">Save</button>
+                              <button type="reset" class="btn btn-label-secondary waves-effect">Reset</button>
+      
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- Chatbot postion // -->
+                  </form>
+             
+                  {% comment %} {% endblock %} {% endcomment %}
+                </div>
+      
+      
+      
+                <!-- Chatbot page -->
+                <div class="col-sm">
+      
+            <div id="chat-container" class="chatbot-font-family chatbot-font-size">
+              <div id="chat-header" class="chat-history-header border-bottom theme-header top-bar-background theme-default chatbot-font-family chatbot-font-size">
+                <h6 class="m-0" id="chat-display-name">{% if  data.cfg.display_name %}{{  data.cfg.display_name }}{% else%}John{% endif %}</h6>
+                <div class="d-flex align-items-center">
+                  <div class="dropdown">
+                    <button class="btn btn-icon btn-text-secondary rounded-pill dropdown-toggle hide-arrow"
+                            data-bs-toggle="dropdown" aria-expanded="true" id="chat-header-actions">
+                      <i class="mdi mdi-dots-vertical mdi-24px"></i>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="chat-header-actions">
+                      <a class="dropdown-item" href="javascript:void(0);">Clear Chat</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+      
+              <div id="chat-window" class="chatbot-background chat-heigh chatbot-pattern">
+                <div class="chat-history-body ">
+      
+                          <div class="d-flex overflow-hidden" >
+                                      <div class="user-avatar flex-shrink-0 me-3">
+                                        <div class="avatar avatar-sm">
+                                          <img src="{% if cfg.chatbot_image %}{{ cfg.chatbot_image.url }}{% else %}{% static 'backend/image/avatars/1.png' %}{% endif %}" alt="Avatar"
+                                               class="rounded-circle chatbot-image" />
+                                        </div>
+                                      </div>
+                                      <div class="chat-message-wrapper flex-grow-1">
+                                        <div class="chat-message-text chatbot-text theme-right chatbot-msg-background user-default-msg-color">
+                                          <p class="mb-0" id="chatbot-initial-messages">{% if  data.cfg.initial_message %}{{  data.cfg.initial_message|safe }}{% else %}Hi! What can I help with you?{% endif %}
+                                          </p>
+                                        </div>
+                                        &nbsp;
+                                        <div class="text-muted">
+                                          <small>{% now "M-d,Y P" %}</small>
+                                        </div>
+                                      </div>
+                                    </div>
+                  </div>
+                  <div class="message-container2 right">
+                            <div class="d-flex overflow-hidden">
+                                      <div class="chat-message-wrapper flex-grow-1">
+                                        <div id="user-msg-background-new" class="chat-message-text theme-left user-msg-background user-default-msg-color">
+                                          <p class="mb-0 user-msg-color">Hiii</p>
+                                        </div>
+                                        <div class="text-end text-muted">
+                                          <i class="mdi mdi-check-all mdi-14px text-success me-1"></i>
+                                          <small>{% now "M-d,Y P" %}</small>
+                                        </div>
+                                      </div>
+                                    </div>
+                  </div>
+              </div>
+              <div id="chat-input">
+                  <input type="text" id="message-input" placeholder="Type your message...">
+                  <button id="send-button">Send</button>
+              </div>
+           <div class="bottom-tab justify-content-between sticky-powerdby">
+              <small style="color:black" class="mx-auto" id="chat-footer-name">
+                  {% if data.cfg.footer_name %}{{  data.cfg.footer_name|safe }}{% else%}Powered by My AI Solutions{% endif %}
+              </small>
+          </div>
+      
+      
+         <div class="avata d-flex justify-content-end position-relative my-4">
+                        <img class="rounded-circle cursor-pointer launcher-icon" src="{% if cfg.chatbot_launcher_icon %}{{ cfg.chatbot_launcher_icon.url }}{% else %}{% static 'backend/image/launcher_icon/avatar-1.png' %}{% endif %}"
+                             alt="avatar" height="60" width="60">
+                        <span
+                                class="position-absolute top-0 start-100 translate-middle badge border rounded-pill bg-primary">1</span>
+                      </div>
+               </div>
+          </div>
+              </div>
+            </div>
+            <!-- Appearance -->
+          </div>
+        </div>
+      </div>
+      <p id="responseMessage"></p>
+      {% endblock %}
+      {% block script %}
+
+      <script src="{% static 'backend/js/chatbot/chatbot-customization.js' %}"></script>
+{% endblock %}

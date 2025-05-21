@@ -1,0 +1,249 @@
+{% extends 'layout/base.html' %}
+{% load static %}
+{% block title %}Admin Create Chat bot{% endblock %}
+{% block content %}
+{% include 'layout/partials/ChatBot/chat-head.html' %}
+<div class="app-chat card overflow-hidden app-chat-update">
+    <div class="row g-0">
+      <!-- Chat & Contacts -->
+      <div
+        class="col app-chat-contacts app-sidebar flex-grow-0 overflow-hidden border-end"
+        id="app-chat-contacts">
+        <div class="sidebar-header py-3 px-4 border-bottom">
+          <div class="d-flex align-items-center me-3 me-lg-0">
+            <div class="flex-grow-1 input-group input-group-merge rounded-pill">
+              <span class="input-group-text" id="basic-addon-search31"
+                ><i class="mdi mdi-magnify lh-1"></i
+              ></span>
+              <input
+                type="text"
+                class="form-control chat-search-input"
+                placeholder="Search..."
+                aria-label="Search..."
+                onkeyup="myFunction()"
+                id="searchInput"
+                aria-describedby="basic-addon-search31" />
+            </div>
+          </div>
+          <i
+            class="mdi mdi-close mdi-20px cursor-pointer position-absolute top-0 end-0 mt-2 me-2 fs-4 d-lg-none d-block"
+            data-overlay
+            data-bs-toggle="sidebar"
+            data-target="#app-chat-contacts"></i>
+        </div>
+        <div class="sidebar-body">
+          <!-- Chats -->
+          <ul class="list-unstyled chat-contact-list" id="chat-list">
+            <li class="chat-contact-list-item chat-contact-list-item-title">
+            </li>
+            <li class="chat-contact-list-item chat-list-item-0 d-none">
+              <h6 class="text-muted mb-0">No Chats Found</h6>
+            </li>
+
+            <div id='chat-history-div'>
+
+              {% for vstr in visitors %}
+              <li class="chat-contact-list-item" id="date_filter{{vstr.id}}" onclick="ShowHistory(this, '{{vstr.id}}')">
+                  <a class="d-flex align-items-center">
+
+                    {% for v_dict in visitor_dict.items %}
+                    {% if v_dict.0 == vstr.id %}
+                      {% if v_dict.1.visitor_nam %}
+                      <div class="flex-shrink-0 avatar avatar-online" data-letters="MN">
+                      </div>
+                      {% else %}
+                      {% endif %}
+                    {% endif %}
+                    {% endfor %}
+
+
+                    <div class="chat-contact-info flex-grow-1 ms-3">
+                      <h6 class="chat-contact-name text-truncate text-capitalize m-0">
+                  {% for v_dict in visitor_dict.items %}
+                    {% if v_dict.0 == vstr.id %}
+                      {% if v_dict.1.visitor_name %}
+                        {{v_dict.1.visitor_name}}
+                      {% else %}
+                        {{vstr.visitor_id}}
+                      {% endif %}
+                    {% endif %}
+                    {% endfor %}
+                      </h6>
+                      <p class="chat-contact-status text-truncate text-capitalize mb-0">
+                        {% for v_dict in visitor_dict.items %}
+                        {% if v_dict.0 == vstr.id %}
+                        {{v_dict.1.question}}
+                        {% endif %}
+                        {% endfor %}
+                      </p>
+                    </div>
+                    <small class="mb-auto">
+                      {% for v_dict in visitor_dict.items %}
+                        {% if v_dict.0 == vstr.id %}
+                        {{v_dict.1.created_at|timesince}}
+                        {% endif %}
+                        {% endfor %}
+                    </small>
+                  </a>
+                </li>
+
+              {% endfor %}
+
+            </div>
+          </ul>
+        </div>
+      </div>
+      <!-- /Chat contacts -->
+
+      <!-- Chat History -->
+      <div class="col app-chat-history app-chat-history-update " id="chatbot-config">
+        <div class="chat-history-wrapper chatbot-font-family chatbot-font-size">
+          <div class="chat-history-header border-bottom chatbot-theme top-bar-background top-bar-text">
+            <div class="d-flex justify-content-between align-items-center ">
+              <div class="d-flex overflow-hidden align-items-center ">
+                <i
+                  class="mdi mdi-menu mdi-24px cursor-pointer d-lg-none d-block me-3"
+                  data-bs-toggle="sidebar"
+                  data-overlay
+                  data-target="#app-chat-contacts"></i>
+                <div class="chat-contact-info flex-grow-1 ms-3">
+                  <h5 class="m-0 top-bar-text">{% if cfg.display_name %}{{ cfg.display_name }}{% else %}John{% endif %}</h5>
+                  <span class="user-status text-body d-none">Great Assistance </span>
+                </div>
+                <div class="chat-contact-info flex-grow-1 ms-3">
+                  <h3 id='chat-title' class="text-primary m-0 d-none"></h3>
+                  {% comment %} <span class="user-status text-body">Great Assistance</span> {% endcomment %}
+                </div>
+              </div>
+              <div class="me-5 flex-fill text-center top-bar-text" id="chat-heading"></div>
+
+              <div class="dropdown d-none" id="dropdown">
+                <button
+                    class="btn btn-icon btn-text-secondary rounded-pill dropdown-toggle hide-arrow waves-effect waves-light"
+                    data-bs-toggle="dropdown" aria-expanded="true" id="emailsActions">
+                    <i class="mdi mdi-dots-vertical mdi-20px"></i>
+                </button>
+                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="emailsActions">
+                    <a id="clear_history_a" class="dropdown-item waves-effect" href="/delete_visitor_history" >Clear</a>
+                </div>
+            </div>
+            </div>
+          </div>
+          <div class="chat-history-body chat-history-body-update chatbot-background-color chatbot-pattern">
+            <ul id='chat-history-ul' class="list-unstyled chat-history">
+              {% for chat in data.chats %}
+                <li class="chat-message chat-message-right">
+                  <div class="d-flex overflow-hidden">
+                    <div class="chat-message-wrapper flex-grow-1">
+                      <div class="chat-message-text chatbot-theme user-msg-background user-msg-color">
+                        <p class="mb-0">{{chat.question}}</p>
+                      </div>
+                      <div class="text-end text-muted">
+                        <i class="mdi mdi-check-all mdi-14px text-success me-1"></i>
+                        <small>{{chat.sent}}</small>
+                      </div>
+                    </div>
+                    <div class="user-avatar flex-shrink-0 ms-3">
+                      <div class="avatar avatar-sm">
+                        <img src="{% if cfg.chatbot_image %}{{ cfg.chatbot_image.url }}{% else %}{% static 'assets1/img/avatars/1.png' %}{% endif %}" alt="Avatar" class="rounded-circle" />
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li class="chat-message">
+                  <div class="d-flex overflow-hidden">
+                    <div class="user-avatar flex-shrink-0 me-3">
+                      <div class="avatar avatar-sm">
+                        <img src="{% if cfg.chatbot_image %}{{ cfg.chatbot_image.url }}{% else %}{% static 'assets1/img/avatars/1.png' %}{% endif %}" alt="Avatar" class="rounded-circle" />
+                      </div>
+                    </div>
+                    <div class="chat-message-wrapper flex-grow-1">
+                      <div class="chat-message-text chatbot-msg-background">
+                        <p class="mb-0 chatbot-text-color">{{chat.answer}}</p>
+                      </div>
+                      <div class="text-muted">
+                        <small>{{chat.received}}</small>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              {% endfor %}
+
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- /Chat History -->
+
+      <!-- Sidebar Right -->
+      <div class="col app-chat-sidebar-right app-sidebar overflow-hidden" id="app-chat-sidebar-right">
+        <div
+          class="sidebar-header d-flex flex-column justify-content-center align-items-center flex-wrap px-4 pt-5">
+          <div class="avatar avatar-xl avatar-online w-px-75 h-px-75">
+            <img src="{% static 'assets1/img/avatars/1.png' %}" alt="Avatar" class="rounded-circle" />
+          </div>
+          <h5 class="mt-3 mb-1 fw-semibold">Felecia Rower</h5>
+          <span>NextJS Developer</span>
+          <i
+            class="mdi mdi-close mdi-20px cursor-pointer close-sidebar d-block"
+            data-bs-toggle="sidebar"
+            data-overlay
+            data-target="#app-chat-sidebar-right"></i>
+        </div>
+        <div class="sidebar-body px-4">
+          <div class="my-4 pt-2">
+            <p class="text-uppercase mb-2">About</p>
+            <p class="mb-0">
+              A Next. js developer is a software developer who uses the Next. js framework alongside ReactJS
+              to build web applications.
+            </p>
+          </div>
+          <div class="my-4 py-1">
+            <p class="text-uppercase mb-2">Personal Information</p>
+            <ul class="list-unstyled d-grid gap-3 mb-0">
+              <li class="d-flex align-items-center">
+                <i class="mdi mdi-email-outline"></i>
+                <span class="align-middle ms-2">josephGreen@email.com</span>
+              </li>
+              <li class="d-flex align-items-center">
+                <i class="mdi mdi-phone"></i>
+                <span class="align-middle ms-2">+1(123) 456 - 7890</span>
+              </li>
+              <li class="d-flex align-items-center">
+                <i class="mdi mdi-clock-outline"></i>
+                <span class="align-middle ms-2">Mon - Fri 10AM - 8PM</span>
+              </li>
+            </ul>
+          </div>
+          <div class="my-4">
+            <p class="text-uppercase">Options</p>
+            <ul class="list-unstyled d-grid gap-3 mt-3">
+              <li class="cursor-pointer d-flex align-items-center">
+                <i class="mdi mdi-tag-outline"></i>
+                <span class="align-middle ms-2">Add Tag</span>
+              </li>
+              <li class="cursor-pointer d-flex align-items-center">
+                <i class="mdi mdi-star-outline"></i>
+                <span class="align-middle ms-2">Important Contact</span>
+              </li>
+              <li class="cursor-pointer d-flex align-items-center">
+                <i class="mdi mdi-image-outline"></i>
+                <span class="align-middle ms-2">Shared Media</span>
+              </li>
+              <li class="cursor-pointer d-flex align-items-center">
+                <i class="mdi mdi-delete-outline"></i>
+                <span class="align-middle ms-2">Delete Contact</span>
+              </li>
+              <li class="cursor-pointer d-flex align-items-center">
+                <i class="mdi mdi-block-helper"></i>
+                <span class="align-middle ms-2">Block Contact</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- /Sidebar Right -->
+      <div class="app-overlay"></div>
+    </div>
+  </div>
+{% endblock %}

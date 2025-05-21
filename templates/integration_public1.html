@@ -1,0 +1,866 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+{% block header %}
+  <meta charset="UTF-8">
+  <title>Share-Chat-Public - My AI Solution</title>
+
+  <meta name="description" content="" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="{% static 'assets/images/ai_logo-favicon.png' %}" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="{% static 'assets1/vendor/fonts/materialdesignicons.css' %}" />
+  <link rel="stylesheet" href="{% static 'assets1/vendor/fonts/fontawesome.css' %}" />
+  <!-- Menu waves for no-customizer fix -->
+  <link rel="stylesheet" href="{% static 'assets1/vendor/libs/node-waves/node-waves.css' %}" />
+
+  <!-- Core CSS -->
+  <link rel="stylesheet" href="{% static 'assets1/vendor/css/rtl/core.css' %}" class="template-customizer-core-css" />
+  <link rel="stylesheet" href="{% static 'assets1/vendor/css/rtl/theme-default.css' %}" class="template-customizer-theme-css" />
+  <link rel="stylesheet" href="{% static 'assets1/css/demo.css' %}" />
+
+  <!-- Vendors CSS -->
+  <link rel="stylesheet" href="{% static 'assets1/vendor/libs/perfect-scrollbar/perfect-scrollbar.css' %}" />
+  <link rel="stylesheet" href="{% static 'assets1/vendor/libs/typeahead-js/typeahead.css' %}" />
+  <link rel="stylesheet" href="{% static 'assets1/vendor/libs/bootstrap-maxlength/bootstrap-maxlength.css' %}" />
+
+  <!-- Page CSS -->
+  <link rel="stylesheet" href="{% static 'assets1/css/integration.css' %}"/>
+
+<style>
+  /* Chatbot Theme color */
+    {% if cfg.chatbot_theme  %}
+      #chatbot-config .chatbot-theme{
+      background-color: {{ cfg.chatbot_theme }} !important;
+    }
+    {% endif %}
+
+    /* Chatbot pattern */
+    {% if cfg.chatbot_background_pattern  %}
+      #chatbot-config .chatbot-pattern {
+      background-image: url({{ cfg.chatbot_background_pattern.url }}) !important;
+    }
+    {% endif %}
+
+    /* Chatbot messages background */
+    {% if cfg.bot_message_background  %}
+      #chatbot-config .chatbot-msg-background {
+      background-color: {{ cfg.bot_message_background }} !important;
+    }
+    {% endif %}
+
+    /* Chatbot messages text color */
+    {% if cfg.bot_message_color  %}
+      #chatbot-config .chatbot-text-color {
+      color: {{ cfg.bot_message_color }} !important;
+    }
+    {% endif %}
+
+    /* User messages bg color */
+    {% if cfg.user_message_background %}
+      #chatbot-config .user-msg-background {
+      background-color: {{ cfg.user_message_background }} !important;
+    }
+    {% endif %}
+
+    /* User messages text color */
+    {% if cfg.user_message_color  %}
+      #chatbot-config .user-msg-color {
+      color: {{ cfg.user_message_color }} !important;
+    }
+    {% endif %}
+
+    /* Top bar bg color */
+      {% if cfg.top_bar_background  %}
+        #chatbot-config .top-bar-background {
+        background-color: {{ cfg.top_bar_background }} !important;
+        height: 77px;
+      }
+
+      {% endif %}
+
+      /* Top bar text color */
+      {% if cfg.top_bar_textcolor %}
+        #chatbot-config .top-bar-text {
+          color: {{ cfg.top_bar_textcolor }} !important;
+          font-size: 20px;
+          padding: 13px;
+      }
+      {% else %}
+      #chatbot-config .top-bar-text {
+          color: black;
+          font-size: 20px;
+          padding: 13px;
+      }
+      {% endif %}
+
+    /* Chatbot font style */
+    {% if cfg.font_family  %}
+    #chatbot-config .chatbot-font-family {
+      font-family: {{ cfg.font_family }} !important;
+    }
+    {% endif %}
+
+    /* Chatbot font style size */
+    {% if cfg.font_size %}
+      #chatbot-config .chatbot-font-size {
+        font-size: {{ cfg.font_size }}px !important;
+      }
+    {% endif %}
+    /*  Chatbot background color */
+    {% if cfg.chatbot_background_color %}
+      #chatbot-config .chatbot-background-color {
+        background-color: {{ cfg.chatbot_background_color }} !important;
+      }
+    {% endif %}
+
+.sticky {
+    position: -webkit-sticky !important;
+    top: 5rem !important;
+    background-color: #f7f7f9;
+    z-index: 999;
+    padding: 0 1rem;
+}
+
+.chat-message {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.icon-container {
+  margin-left: auto;
+  margin-right: 3rem;
+  display: none;
+}
+
+
+.chat-history-footern{
+  padding:5px;
+  }
+
+#send{
+  height: 70px;
+  width: 180px;
+  font-size: 20px;
+}
+</style>
+
+{% endblock %}
+</head>
+<body>
+          <div class="app-chat card overflow-hidden m-4">
+            <div class="row g-0">
+
+              <!-- Chat History -->
+              <div class="col app-chat-history" id="chatbot-config">
+                <div class="chat-history-wrapper chatbot-font-family chatbot-font-size">
+                  <div class="chat-history-header border-bottom chatbot-theme top-bar-background top-bar-text">
+                    <div class="text-center" id="cfg-chat-heading"></div>
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div class="d-flex overflow-hidden align-items-center">
+                        <i
+                          class="mdi mdi-menu mdi-24px cursor-pointer d-lg-none d-block me-3"
+                          data-bs-toggle="sidebar"
+                          data-overlay
+                          data-target="#app-chat-contacts"></i>
+<!--                        <div class="flex-shrink-0 avatar avatar-online">-->
+<!--                          <img-->
+<!--                            src="{% if cfg.chatbot_image %}{{ cfg.chatbot_image.url }}{% else %}{% static 'assets1/img/avatars/1.png' %}{% endif %}"-->
+<!--                            alt="Avatar"-->
+<!--                            class="rounded-circle"-->
+<!--                            data-bs-toggle="sidebar"-->
+<!--                            data-overlay-->
+<!--                            data-target="#app-chat-sidebar-right" />-->
+<!--                        </div>-->
+
+                        <div class="chat-contact-info flex-grow-1 ms-3">
+                          <div class="m-0 h5 top-bar-text">{% if cfg.display_name %}{{ cfg.display_name }}{% else %}John{% endif %}</div>
+                          <span class="user-status text-body d-none">Great Assistance</span>
+                        </div>
+                      </div>
+<!--                      <div class="text-center" id="chat-heading">{% if cfg.chatbot_title %}{{ cfg.chatbot_title }}{% else %}Welcome{% endif %}</div>-->
+                      <div class="text-center" id="chat-heading">{{ cfg.chatbot_title }}</div>
+                      <div class="d-flex align-items-center">
+<!--                        <i id='delete-history'-->
+<!--                          class="mdi mdi-delete-outline mdi-24px cursor-pointer d-sm-block d-none me-1 btn btn-text-secondary btn-icon rounded-pill"></i>-->
+                      </div>
+                    </div>
+                  </div>
+                  <div class="chat-history-body chatbot-pattern chatbot-background-color">
+                    <ul id='chat-history-ul' class="list-unstyled chat-history">
+
+                      <li class="chat-message">
+                        <div class="d-flex overflow-hidden">
+                          <div class="user-avatar flex-shrink-0 me-3">
+                            <div class="avatar avatar-sm">
+                              <img src="{% if cfg.chatbot_image %}{{ cfg.chatbot_image.url }}{% else %}{% static 'assets1/img/avatars/1.png' %}{% endif %}" alt="Avatar" class="rounded-circle" />
+                            </div>
+                          </div>
+                          <div class="chat-message-wrapper flex-grow-1">
+                            <div class="chat-message-text chatbot-msg-background"  data-toggle="popover">
+                              <p class="mb-0 chatbot-text-color">
+                                {% comment %}
+                                {% if cfg.initial_message %}{{ cfg.initial_message }}{% else %}Hi! What can I help with you ? 😎{% endif %} </p>
+                              {% endcomment %}
+                              {% if cfg.initial_message %}{{ cfg.initial_message|safe }}{% else%}Hi! What can I help with you ? 😎{% endif %}
+                            </div>
+
+                            <div class="text-muted">
+                              <small>{% now "M-d,Y P" %}</small>
+                            </div>
+                          </div>
+                        </div>
+                      </li>
+
+                      {% for chat in chat_history %}
+                        <li class="chat-message chat-message-right">
+                          <div class="d-flex overflow-hidden">
+                            <div class="chat-message-wrapper flex-grow-1">
+                              <div class="chat-message-text chatbot-theme user-msg-background user-default-msg-color">
+                                <p class="mb-0 user-msg-color">{{chat.question|safe}} </p>
+                              </div>
+                              <div class="text-end text-muted">
+                                <i class="mdi mdi-check-all mdi-14px text-success me-1"></i>
+                                <small>{{chat.question_datetime}}</small>
+                              </div>
+                            </div>
+                            <div class="user-avatar flex-shrink-0 ms-3">
+                              <div class="avatar avatar-sm">
+                                <img src="{% static 'assets1/img/avatars/1.png' %}" alt="Avatar" class="rounded-circle" />
+                              </div>
+                            </div>
+                          </div>
+                        </li>
+                        <li class="chat-message">
+                          <div class="d-flex overflow-hidden">
+                            <div class="chat-message-wrapper flex-grow-1">
+                              <div class="chat-message-text chatbot-msg-background">
+                                <div class="icon-container float-end" data_id = "{{ chat.id }}">
+                                  <i class="fas fa-copy icon d-none"></i>
+                                  <i class="mdi {% if chat.positive_comment %}mdi-thumb-up{% else %}mdi-thumb-up-outline{% endif %} icon text-primary thumbsup" type="button" data-bs-toggle="modal" data-bs-target="#thumbsUpModal"></i>
+                                  <i class="mdi  {% if chat.negative_comment %}mdi-thumb-down{% else %}mdi-thumb-down-outline{% endif %} icon text-primary thumbsdown" type="button" class="btn btn-sm btn-primary waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#thumbsDownModal"></i>
+                                </div>
+                                <p class="mb-0 chatbot-text-color">{{chat.answer|safe}}</p>
+                              </div>
+                              <div class="text-muted">
+                                <small>{{chat.answer_datetime}}</small>
+                              </div>
+                            </div>
+                          </div>
+                        </li>
+
+
+                      {% endfor %}
+                    </ul>
+                  </div>
+                  <!-- Chat message form -->
+
+
+                  <div class="chat-history-footern ">
+                    <form class="form-send-message d-flex justify-content-between align-items-center">
+
+                      {% csrf_token %}
+                      <input type="hidden" id="chatdata_id" value="{{data.chatbot_id}}">
+                      <input id='message'
+                        class="form-control message-input me-3 shadow-none"
+                        placeholder="Type your message here" autofocus />
+<!--                      <input id='src_checkbox' type="checkbox" name="src_checkbox"-->
+<!--                             class="form-check-input" data-bs-toggle="tooltip" data-bs-placement="top"-->
+<!--                        data-bs-original-title="Include Source"-->
+<!--                      />-->
+<!--                      <label for="attach-doc" class="form-label m-4">Debug-->
+<!--                        </label>-->
+                      <div class="message-actions d-flex align-items-center">
+                        {% comment %} <i
+                          class="btn btn-text-secondary btn-icon rounded-pill speech-to-text mdi mdi-microphone mdi-20px cursor-pointer"></i>
+                        <label for="attach-doc" class="form-label mb-0">
+                          <i
+                            class="mdi mdi-paperclip mdi-20px cursor-pointer btn btn-text-secondary btn-icon rounded-pill me-2 ms-1"></i>
+                          <input type="file" id="attach-doc" hidden />
+                        </label> {% endcomment %}
+                        <button id='send' class="btn btn-primary d-flex send-msg-btn">
+                          <span class="align-middle">Send</span>
+                        </button>
+                      </div>
+                  </form>
+                </div>
+                  <div class="justify-content-between sticky-powerdby">
+                          <small style="color:black"  id="chat-footer-name">
+                            {% if cfg.footer_name %}
+                            {{ cfg.footer_name|safe }}
+                            {% else%}
+                            Powered by My AI Solutions
+                            {% endif %}</small>
+                      </div>
+                    <div id="ErrorMsg" style="color: red; margin: -3px 0 0 27px;">
+
+                        </div>
+                </div>
+              </div>
+              <!-- /Chat History -->
+
+              <!-- Sidebar Right -->
+              {% comment %}
+              <div class="col app-chat-sidebar-right app-sidebar overflow-hidden" id="app-chat-sidebar-right">
+                <div
+                  class="sidebar-header d-flex flex-column justify-content-center align-items-center flex-wrap px-4 pt-5">
+                  <div class="avatar avatar-xl avatar-online w-px-75 h-px-75">
+                    <img src="{% static 'assets1/img/avatars/1.png' %}" alt="Avatar" class="rounded-circle" />
+                  </div>
+                  <h5 class="mt-3 mb-1 fw-semibold">Felecia Rower</h5>
+                  <span>NextJS Developer</span>
+                  <i
+                    class="mdi mdi-close mdi-20px cursor-pointer close-sidebar d-block"
+                    data-bs-toggle="sidebar"
+                    data-overlay
+                    data-target="#app-chat-sidebar-right"></i>
+                </div>
+                <div class="sidebar-body px-4">
+                  <div class="my-4 pt-2">
+                    <p class="text-uppercase mb-2">About</p>
+                    <p class="mb-0">
+                      A Next. js developer is a software developer who uses the Next. js framework alongside ReactJS
+                      to build web applications.
+                    </p>
+                  </div>
+                  <div class="my-4 py-1">
+                    <p class="text-uppercase mb-2">Personal Information</p>
+                    <ul class="list-unstyled d-grid gap-3 mb-0">
+                      <li class="d-flex align-items-center">
+                        <i class="mdi mdi-email-outline"></i>
+                        <span class="align-middle ms-2">josephGreen@email.com</span>
+                      </li>
+                      <li class="d-flex align-items-center">
+                        <i class="mdi mdi-phone"></i>
+                        <span class="align-middle ms-2">+1(123) 456 - 7890</span>
+                      </li>
+                      <li class="d-flex align-items-center">
+                        <i class="mdi mdi-clock-outline"></i>
+                        <span class="align-middle ms-2">Mon - Fri 10AM - 8PM</span>
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="my-4">
+                    <p class="text-uppercase">Options</p>
+                    <ul class="list-unstyled d-grid gap-3 mt-3">
+                      <li class="cursor-pointer d-flex align-items-center">
+                        <i class="mdi mdi-tag-outline"></i>
+                        <span class="align-middle ms-2">Add Tag</span>
+                      </li>
+                      <li class="cursor-pointer d-flex align-items-center">
+                        <i class="mdi mdi-star-outline"></i>
+                        <span class="align-middle ms-2">Important Contact</span>
+                      </li>
+                      <li class="cursor-pointer d-flex align-items-center">
+                        <i class="mdi mdi-image-outline"></i>
+                        <span class="align-middle ms-2">Shared Media</span>
+                      </li>
+                      <li class="cursor-pointer d-flex align-items-center">
+                        <i class="mdi mdi-delete-outline"></i>
+                        <span class="align-middle ms-2">Delete Contact</span>
+                      </li>
+                      <li class="cursor-pointer d-flex align-items-center">
+                        <i class="mdi mdi-block-helper"></i>
+                        <span class="align-middle ms-2">Block Contact</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              {% endcomment %}
+                <!-- /Sidebar Right -->
+
+              <div class="app-overlay"></div>
+            </div>
+          </div>
+          <div id="get_source" style="display: none; color: black;  background-color: #f8f8f9;
+            width: 100%;
+            padding: 25px;
+            margin: 13px 0 0 0;
+            border-radius: 8px;
+            box-shadow: 0px 0px 1px 1px #d7d2d2;">
+        </div>
+
+</body>
+
+{% block script %}
+  <!-- Core JS -->
+  <!-- build:js assets/vendor/js/core.js -->
+  <script src="{% static 'assets1/vendor/libs/jquery/jquery.js' %}"></script>
+  <script src="{% static 'assets1/vendor/libs/popper/popper.js' %}"></script>
+  <script src="{% static 'assets1/vendor/libs/perfect-scrollbar/perfect-scrollbar.js' %}"></script>
+  <script src="{% static 'assets1/vendor/libs/node-waves/node-waves.js' %}"></script>
+
+  <script src="{% static 'assets1/vendor/libs/hammer/hammer.js' %}"></script>
+  <script src="{% static 'assets1/vendor/libs/i18n/i18n.js' %}"></script>
+  <script src="{% static 'assets1/vendor/libs/typeahead-js/typeahead.js' %}"></script>
+
+  <script src="{% static 'assets1/vendor/js/menu.js' %}"></script>
+  <!-- endbuild -->
+
+  <!-- Vendors JS -->
+  <script src="{% static 'assets1/vendor/libs/bootstrap-maxlength/bootstrap-maxlength.js' %}"></script>
+
+  <!-- Main JS -->
+  <script src="{% static 'assets1/js/main.js' %}"></script>
+
+  <!-- Page JS -->
+  <script src="{% static 'assets1/js/app-chat.js' %}"></script>
+  <script>
+    // window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })
+    var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+
+    function historyClick(e, history) {
+      console.log(history)
+      $('#chat-title').text(history)
+      var $listItems = $('li').filter('.chat-contact-list-item');
+      $listItems.each(function() {
+        // Do something with the current li element (this)
+        $(this).removeClass('active')
+      });
+
+      //$('#chat-title').text(history)
+      get_chat(history)
+
+      $(e).closest('li').addClass('active')
+    }
+
+    function getCurrentFormattedTime() {
+    const options = {
+      year: "numeric",
+      month: "short",
+      day: "2-digit",
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true
+    };
+    const formattedTime = new Date().toLocaleString("en-US", options);
+    return formattedTime;
+  }
+
+  const currentFormattedTime = getCurrentFormattedTime();
+    function get_chat(history) {
+      //$('#chat-title').text(history)
+      $.ajax({
+        type: "POST",
+        url: "/get_chat",
+        headers: {
+          "X-CSRFToken": csrftoken
+        },
+        data: {'category' :'librarian', 'history': history },
+        success: function (data) {
+          chat_data = ``
+          for (i = 1; i <= data.length; i++) {
+            chat_data += `
+            <li class="chat-message chat-message-right">
+              <div class="d-flex overflow-hidden">
+                <div class="chat-message-wrapper flex-grow-1">
+                  <div class="chat-message-text chatbot-theme user-msg-background user-default-msg-color">
+                    <p class="mb-0 user-msg-color">${data[i-1][0]}</p>
+                  </div>
+                  <div class="text-end text-muted">
+                    <i class="mdi mdi-check-all mdi-14px text-success me-1"></i>
+                    <small>${data[i-1][1]}</small>
+                  </div>
+                </div>
+                <div class="user-avatar flex-shrink-0 ms-3">
+                  <div class="avatar avatar-sm">
+                    <img src="{% static 'assets1/img/avatars/1.png' %}" alt="Avatar" class="rounded-circle" />
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li class="chat-message">
+              <div class="d-flex overflow-hidden">
+                <div class="chat-message-wrapper flex-grow-1">
+                  <div class="chat-message-text chatbot-msg-background">
+                    <div class="icon-container float-end" data_id = "${data.chat_history_id}">
+                        <i class="fas fa-copy icon d-none"></i>
+                        <i class="mdi mdi-thumb-up-outline icon text-primary thumbsup" type="button" class="btn btn-sm btn-primary waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#thumbsUpModal"></i>
+                        <i class="mdi mdi-thumb-down-outline icon text-primary thumbsdown" type="button" class="btn btn-sm btn-primary waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#thumbsDownModal"></i>
+                      </div>
+                      <p class="mb-0 chatbot-text-color" >${data.response}</p>
+                    </div>
+                    <p class="mb-0 chatbot-text-color" >${data[i-1][2]}</p>
+                  </div>
+                  <div class="text-muted">
+                    <small>${data[i-1][3]}</small>
+                  </div>
+                </div>
+              </div>
+            </li>
+              `;
+          }
+          // 661 line style="color:#000000"
+
+          $("#chat-history-ul").html(chat_data);
+          //$('#chat-history-ul').scrollTop($("#chat-history-ul")[0].scrollHeight);
+        }
+      });
+    }
+
+    function get_history(){
+      $.ajax({
+        type: "GET",
+        url: "/get_history",
+        headers: {
+          "X-CSRFToken": csrftoken
+        },
+        //data: {'category':'librarian'},
+        success: function (data) {
+          console.log("got history")
+          var history_data = ""
+          for (let i = 1; i <= data.length; i++) {
+            if (i==1){
+              history_data += `
+                <li class="chat-contact-list-item active" onclick="historyClick(this, '${data[i-1]}')">
+                  <a class="d-flex align-items-center">
+                    <div class="chat-contact-info flex-grow-1 ms-3">
+                      <h6 class="chat-contact-name text-truncate m-0">${data[i-1]}</h6>
+                    </div>
+                    <small class="text-muted mb-auto">5 Minutes</small>
+                  </a>
+                </li>
+              `
+            }
+            else{
+              history_data += `
+              <li class="chat-contact-list-item" onclick="historyClick(this, '${data[i-1]}')">
+                <a class="d-flex align-items-center">
+                  <div class="chat-contact-info flex-grow-1 ms-3">
+                    <h6 class="chat-contact-name text-truncate m-0">${data[i-1]}</h6>
+                  </div>
+                  <small class="text-muted mb-auto">5 Minutes</small>
+                </a>
+              </li>
+              `
+            }
+          }
+          $('#chat-history-div').html(history_data);
+
+          // chat initializer
+          if (data.length > 0) {
+            var init_history = data[0]
+            $('#chat-title').text(init_history)
+            console.log("inithistory", init_history)
+            // get_chat(init_history);
+          }
+        }
+      });
+
+    }
+
+    $(document).ready(function (){
+
+      get_history()
+
+      console.log("hello");
+      $('#send').click(()=>{
+        var bot_animation = `<li class="chat-message" id="bot-animation">
+                <div class="d-flex overflow-hidden">
+                  <div class="user-avatar flex-shrink-0 me-3">
+                    <div class="avatar avatar-sm">
+                      <img src="{% if cfg.chatbot_image %}{{ cfg.chatbot_image.url }}{% else %}{% static 'assets1/img/avatars/1.png' %}{% endif %}" alt="Avatar" class="rounded-circle" />
+                    </div>
+                  </div>
+                  <div class="chat-message-wrapper flex-grow-1">
+                    <div class="chat-message-text chatbot-msg-background">
+                        <div class="loader">
+                            <span class="dot">.</span>
+                            <span class="dot">.</span>
+                            <span class="dot">.</span>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+              </li>`
+        var question = $('#message').val();
+        var chatdata_id = $('#chatdata_id').val();
+        var src_checkbox = $('input[name="src_checkbox"]:checked').length;
+
+        var history = $('#chat-title').text()
+        console.log(history)
+        const now = new Date();  // create a new Date object with the current date and time
+        const options = {hour12: false, hourCycle:'h23', second:undefined}
+        const currentTime = now.toLocaleTimeString([], options);
+
+        var message = `
+          <li class="chat-message chat-message-right">
+            <div class="d-flex overflow-hidden">
+              <div class="chat-message-wrapper flex-grow-1">
+                <div class="chat-message-text chatbot-theme user-msg-background user-default-msg-color">
+                  <p class="mb-0 user-msg-color">${question}</p>
+                </div>
+                <div class="text-end text-muted">
+                  <i class="mdi mdi-check-all mdi-14px text-success me-1"></i>
+                  <small>${currentFormattedTime}</small>
+                </div>
+              </div>
+            </div>
+          </li>
+        `
+        $('#chat-history-ul').append(message)
+        $('#chat-history-ul').append(bot_animation)
+
+        $('#ErrorMsg').hide();
+        $('#get_source').hide()
+        $.ajax({
+          type:'POST',
+          url:'/share-public-chat',
+          headers:{
+            'X-CSRFToken' : csrftoken
+          },
+          data:{'history': history, 'question': question, 'chatdata_id': chatdata_id, 'src_checkbox': src_checkbox},
+          success: function(data) {
+            $('#bot-animation').fadeOut(500)
+            const now = new Date();  // create a new Date object with the current date and time
+            const currentTime = now.toLocaleTimeString();
+
+            let answer = `
+              <li class="chat-message">
+                <div class="d-flex overflow-hidden">
+                  <div class="user-avatar flex-shrink-0 me-3">
+                    <div class="avatar avatar-sm">
+                      <img src="{% if cfg.chatbot_image %}{{ cfg.chatbot_image.url }}{% else %}{% static 'assets1/img/avatars/1.png' %}{% endif %}" alt="Avatar" class="rounded-circle" />
+                    </div>
+                  </div>
+                  <div class="chat-message-wrapper flex-grow-1">
+                    <div class="chat-message-text chatbot-msg-background">
+                    <div class="icon-container float-end" data_id = "${data.chat_history_id}">
+                        <i class="fas fa-copy icon d-none"></i>
+                        <i class="mdi mdi-thumb-up-outline icon text-primary thumbsup" type="button" class="btn btn-sm btn-primary waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#thumbsUpModal"></i>
+                        <i class="mdi mdi-thumb-down-outline icon text-primary thumbsdown" type="button" class="btn btn-sm btn-primary waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#thumbsDownModal"></i>
+                      </div>
+                      <p class="mb-0 chatbot-text-color" >${data.response}</p>
+                    </div>
+                    <div class="text-muted">
+                      <small>${currentFormattedTime}</small>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            `
+            setTimeout(function() {
+              $('#chat-history-ul').append(answer);
+              $('#bot-animation').remove()
+            }, 500);
+
+            //$('#get_source').show()
+            $('#get_source').empty()
+
+            if (data.page_content.length > 0) {
+                for (let i = 0; i < data.page_content.length; i++) {
+                      doc_src = `<p><b>Chunk ${i+1}: </b> ${data.page_content[i][0]}
+                      <span class="mdi mdi-link-variant" data-bs-toggle="tooltip"
+                      data-bs-placement="bottom" data-bs-original-title="${data.page_content[i][1]}"></span>
+                      </p>`
+                      $('#get_source').append(doc_src)
+                        }
+
+                if (data.namespace.length > 0) {
+                  $('#get_source').append(`<p><b>Namespace: </b> ${data.namespace}</p>`)
+                  }
+
+                if (data.index_name.length > 0) {
+                  $('#get_source').append(`<p><b>Index Name: </b> ${data.index_name}</p>`)
+                  }
+
+                $('[data-bs-toggle="tooltip"]').tooltip();
+            }
+            else {
+            $('#get_source').hide()
+            }
+
+
+           // $("#chat-history-ul").stop().animate({
+             //       scrollTop: $(".chat-logs")[0].scrollHeight
+               // }, 1000);
+          },
+          error: function (jqXHR, textStatus, errorThrown) {
+              $('#ErrorMsg').show();
+              $('#ErrorMsg').empty();
+              $('#ErrorMsg').append(`<span class="mdi mdi-alert-circle"></span>&nbsp;There is some issue, Please contact with administrator`);
+              console.log("Sorry you sent too many messages!")
+           }
+        });
+      })  // 787 line style="color:#000000"
+
+      // add a chat
+      $('#create-history').click(()=>{
+        var history = $('#chatTitle').val();
+        $.ajax({
+          type: "POST",
+          url: "/create_history",
+          headers: {
+            "X-CSRFToken": csrftoken
+          },
+          data: {'history': history },
+          success: function (data) {
+            var history_element = `
+              <li class="chat-contact-list-item active" onclick="historyClick('${history}')">
+                <a class="d-flex align-items-center">
+                  <div class="chat-contact-info flex-grow-1 ms-3">
+                    <h6 class="chat-contact-name text-truncate m-0">${history}</h6>
+                  </div>
+                  <small class="text-muted mb-auto">5 Minutes</small>
+                </a>
+              </li>
+            `
+            $('#chat-history-div').prepend(history_element);
+            $('#chat-title').text(history)
+            get_chat(history)
+            get_history()
+          }
+        });
+      })
+
+      $('#delete-history').click(()=>{
+        var history = $('#chat-title').text()
+        console.log("delete==============", history)
+        $.ajax({
+          type: "POST",
+          url: "/delete_history",
+          headers: {
+            "X-CSRFToken": csrftoken
+          },
+          data: {'history': history },
+          success: function (data) {
+            get_chat(history)
+            get_history()
+          }
+        });
+
+
+      })
+    })
+    $(document).ready(function() {
+      //  Sweet alert
+      function showSuccessMessage(message) {
+          Swal.fire({
+              icon: 'success',
+              title: 'Success',
+              text: message,
+              timer: 2000, // Time in milliseconds
+              showConfirmButton: false,
+          });
+      }
+
+      // Trigger a Warning Message
+      function showWarningMessage(message) {
+          Swal.fire({
+              icon: 'warning',
+              title: 'Warning',
+              text: message,
+              timer: 2000, // Time in milliseconds
+              showConfirmButton: false,
+          });
+      }
+
+    // Thumbs Up functionality
+    $(document).on('click', '.thumbsup', function () {
+      var id_data = $(this).parent().attr('data_id');
+      $('#thumbsup_attr_id').val(id_data);
+      });
+
+    // positive comment form submission
+    $("#thumbsupform").submit(function(event) {
+      event.preventDefault();
+      var url_data = '/feedback_up/';
+      // Form is valid, proceed with AJAX call
+      var formData = {
+        comment: $("#thumbs_up_feedback").val(),
+        resp_id: $("#thumbsup_attr_id").val(),
+      };
+      console.log(formData);
+
+      $.ajax({
+        type: "POST",
+        url: url_data,
+        headers: {
+          "X-CSRFToken": csrftoken
+          },
+        data: formData,
+        success: function(response) {
+          showSuccessMessage("Feedback Successfully Saved !");
+          // remove thumbsup icon
+          $('.btn-close').click()
+          var resp_id= $("#thumbsup_attr_id").val()
+          $("[data_id="+resp_id+"] .thumbsup").removeClass('mdi-thumb-up-outline').removeClass('thumbsup1').addClass('mdi-thumb-up');
+          $("[data_id="+resp_id+"] .thumbsdown").removeClass('mdi-thumb-down').removeClass('thumbsup1').addClass('mdi-thumb-down-outline');
+          document.getElementById("thumbsupform").reset();
+        },
+        error: function(xhr, status, error) {
+          console.log('error')
+          showWarningMessage("Warning: Something went wrong.");
+          // Handle error here
+        }
+      });
+  });
+
+    // Thumbs down functionality
+    $(document).on('click','.thumbsdown', function () {
+      var id_data = $(this).parent().attr('data_id');
+      console.log(id_data, '------');
+    $('#thumbsdown_attr_id').val(id_data);
+  });
+
+
+  // Negative comment form submission
+  $("#thumbsdownform").submit(function(event) {
+      event.preventDefault();
+      var url_data = '/feedback_down/';
+
+      // Form is valid, proceed with AJAX call
+      var formData = $(this).serialize();
+      console.log(formData);
+
+      $.ajax({
+        type: "POST",
+        url: url_data,
+        headers: {
+          "X-CSRFToken": csrftoken
+          },
+        data: formData,
+        success: function(response) {
+          showSuccessMessage("Feedback Successfully Saved !");
+          // remove thumbsup icon
+          $('.btn-close').click()
+          var resp_id= $("#thumbsdown_attr_id").val()
+          $("[data_id="+resp_id+"] .thumbsup").removeClass('mdi-thumb-up').removeClass('thumbsup1').addClass('mdi-thumb-up-outline');
+          $("[data_id="+resp_id+"] .thumbsdown").removeClass('mdi-thumb-down-outline').removeClass('thumbsup1').addClass('mdi-thumb-down');
+          document.getElementById("thumbsdownform").reset();
+        },
+        error: function(xhr, status, error) {
+          console.log('error')
+          showWarningMessage("Warning: Something went wrong.");
+          // Handle error here
+        }
+      });
+  });
+
+
+    //  Show hover thumbsup icons
+    $(document).on('mouseenter', '.chat-message-text', function () {
+        $(this).find('.icon-container').fadeIn();
+        }).on('mouseleave', '.chat-message-text', function() {
+            var iconContainer = $(this).find('.icon-container');
+            iconContainer.fadeOut(800);
+    });
+});
+
+  </script>
+{% endblock %}
+
+</html>

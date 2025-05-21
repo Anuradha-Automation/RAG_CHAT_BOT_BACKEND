@@ -1,0 +1,12 @@
+<ul class="nav nav-pills flex-column flex-md-row mb-3 gap-2 gap-lg-0">
+    <li class="nav-item">
+        <a class="nav-link {% if '/setting-account/' in request.path %}active{% endif %}" href="{% url 'admin.profile.setting.profile' user_uuid=request.user.uuid %}">
+            <i class="mdi mdi-account-outline mdi-20px me-1"></i>Account
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if '/setting-security/' in request.path %}active{% endif %}" href="{% url 'admin.profile.setting.security' user_uuid=request.user.uuid %}">
+            <i class="mdi mdi-lock-open-outline mdi-20px me-1"></i>Security
+        </a>
+    </li> 
+</ul>

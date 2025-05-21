@@ -1,0 +1,28 @@
+# version: '3.8'
+
+services:
+  rag_app_portal:
+  
+    container_name: django-web
+    image: rohitashaery/ragchatbot:latest
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app
+      - ./static:/app/static  # Fix static volume
+      - ./media:/app/media  # Fix media volume
+      - app_logs:/app/logs
+    env_file:
+      - .env
+    ports:
+      - 8000:8000
+    networks:
+      - rag-network
+
+volumes:
+  app_logs:
+
+networks:
+  rag-network:
+    driver: bridge

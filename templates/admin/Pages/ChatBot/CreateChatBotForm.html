@@ -1,0 +1,71 @@
+
+{% extends 'layout/base.html' %}
+{% load static %}
+{% block title %}Admin Create Chat bot{% endblock %}
+
+{% block content %}
+
+<div class="row">
+  {% if "/chatbot/" in request.path %}
+        <div class="col-xl-2 col-lg-3 col-sm-4 m-4">
+          <div class="card">
+            <div class="card-body" style="padding: 35px">
+              <div class="card-info mt-4 pt-1 ">
+                <div class="d-flex justify-content-center align-items-center">
+                <div class="avatar">
+                  <div class="avatar-initial bg-label-primary rounded">
+                    <button type="button" class="btn btn-icon rounded bg-label-secondary waves-effect waves-light" id ="chat_bot_modal_box" data-url ="{% url 'admin.fetch_modal_content_for_chat_bot'%}" data-login-user-id ={{request.user.uuid}} data-model-type="create" data-chat_id ="">
+                      <i class="mdi-library-plus" style="font-size:30px;">+</i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <small class="d-flex justify-content-center my-1 ">Add</small>
+              </div>
+            </div>
+          </div>
+        </div>
+    {% endif %}
+        {% for chatbots in chatbot %}
+          <div class="col-xl-2 col-lg-3 col-sm-4 m-4">
+            <div class="card">
+              <div class="card-body">
+    
+                <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                  <div class="avatar">
+                    <div class="avatar-initial bg-label-primary rounded">
+                      <a href="{% url 'admin.user.chatbot.dashboard' user_uuid=request.user.uuid  chatbot_id=chatbots.chatbot_id view_type='document-list' %}">
+                      <img class="rounded" src="{{ chatbots.icon_url.url }}" alt="{{ chatbots.chatbot_name }}">
+                    </a>
+                    </a>
+                    </div>
+                  </div>
+                  <div class="dropdown">
+                    <button class="btn p-0" type="button" id="salesOverview" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <i class="mdi mdi-dots-vertical mdi-24px"></i>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="salesOverview">
+                      <a class="dropdown-item waves-effect" id ="chat_bot_modal_box" data-url ="{% url 'admin.fetch_modal_content_for_chat_bot'%}" data-login-user-id ={{request.user.uuid}} data-model-type="edit" data-chat_id ="{{ chatbots.chatbot_id }}"><span >Edit</span></a>
+    
+                      <a class="dropdown-item waves-effect chat_bot_delete" href="javascript:void(0);"id ="chat_bot_delete" data-url ="{% url 'admin.user.chatbot.manage' user_uuid=request.user.uuid curd_type='delete' %}" data-login-user-id ={{request.user.uuid}} data-model-type="delete" data-chat_id ="{{ chatbots.chatbot_id }}">Delete</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-info mt-4 pt-1">
+                  <a href=""><h5 class="mb-2 text-truncate">{{ chatbots.chatbot_name }}</h5></a>
+                  <button type="button" class="btn btn-xs btn-primary waves-effect waves-light d-none" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-custom-class="tooltip-success" data-bs-original-title="Edit Chatbot">
+                    <span class="tf-icons mdi mdi-pencil"></span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+      {% endfor %}
+      </div>
+      <div id ="modal_content"></div>
+
+
+{% endblock %}
+{% block script %}
+<script src="{% static 'backend/js/chatbot/chatbot-actions.js' %}"></script>
+{% endblock %}

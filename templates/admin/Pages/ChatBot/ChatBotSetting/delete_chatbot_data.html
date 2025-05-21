@@ -1,0 +1,43 @@
+{% extends 'layout/base.html' %}
+{% load static %}
+{% block header %}
+<style>
+.center {
+  text-align: center;
+  margin: auto;
+  width: 30%;
+  padding: 10px;
+}
+</style>
+{% endblock %}
+{% block content %}
+{% include 'layout/partials/ChatBot/chat-head.html' %}
+{% include 'layout/partials/ChatBot/chatbot-settings-menu.html' %}
+    <div class="row">
+    <div class="col-md-12">
+            <div class="card">
+              <h5 class="card-header">Delete</h5>
+              <div class="card-body">
+                <div class="mb-3 col-12 mb-0">
+                  <div class="alert alert-warning">
+                      <h6 class="alert-heading mb-1">Are you sure you want to delete your Chatbot <b>'{{data.chatbot_name}}'</b>?</h6>
+                    <p class="mb-0">Once you delete your Chatbot, there is no going back. Please be certain. your Source Documents will also be deleted.</p>
+                  </div>
+                </div>
+                <form id="formChatbotDeactivation" action="/chatbot-setting/{{data.chatbot_id}}" method="post">
+                    {% csrf_token %}
+                  <div class="form-check mb-3">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      name="accountActivation"
+                      id="chatbotActivation" required/>
+                      <label class="form-check-label" for="chatbotActivation">I confirm my Chatbot <b>'{{data.chatbot_name}}'</b> deactivation</label>
+                  </div>
+                  <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+              </div>
+            </div>
+    </div>
+</div>
+{% endblock %}

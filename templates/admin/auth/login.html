@@ -1,0 +1,47 @@
+{% extends 'layout/auth_base.html' %}
+{% load static %}
+{% block title %}Admin Login{% endblock %}
+
+{% block content %}
+<div class="auth-main">
+    <div class="auth-wrapper v2">
+      <div class="auth-sidecontent">
+        <img src="{% static '' %}backend/image/authentication/img-auth-sideimg.jpg" alt="images" class="img-fluid img-auth-side">
+      </div>
+      <div id="pcContent" class="auth-form displaynone">
+        <!-- PC Content -->
+        <div class="card my-5">
+          <div class="card-body">
+            <form method="post" id="login_process" action="/login/">
+              {% csrf_token %}
+              <h4 class="text-center f-w-500 mb-3">Login with your Username</h4>
+              <div class="form-group mb-3">
+                <input type="text" class="form-control" hidden  name="login_route_url" id ="login_route_url" value="{% url 'login'%}">
+                <input type="text" class="form-control" id="username_or_address" name="username_or_address" placeholder="Enter the Username or Email Address" >
+              </div>
+              <div class="form-group mb-3">
+                <input type="password" class="form-control" name="password" id="floatingInput1" placeholder="Password" required>
+              </div>
+              <div class="d-flex mt-1 justify-content-between align-items-center">
+                <h6 class="text-secondary f-w-400 mb-0"><a class="pc-link" href="/forget-password/">Forgot Password?</a>
+                </h6>
+              </div>                                    
+              <div class="d-grid mt-4">
+                <button type="submit" class="btn btn-primary" style="width:100%">Login</button>
+              </div>
+              <div class="d-flex justify-content-between align-items-end mt-4">
+                <h6 class="f-w-500 mb-0">Don't have an Account?</h6>
+                <a href="/register/" class="link-primary">Create Account</a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div id="mobileMessage" class="auth-form diplayblock text-center">
+        <!-- Mobile Message -->
+        <h4 class="m-4">Please login via a PC or a tablet in landscape orientation.</h4>
+      </div>
+    </div>
+  </div>
+   
+{% endblock %}

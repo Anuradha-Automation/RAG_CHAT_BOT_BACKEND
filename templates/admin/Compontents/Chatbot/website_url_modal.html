@@ -1,0 +1,28 @@
+<div class="modal fade" id="addWebsiteModal" tabindex="-1" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" id="modalCenterTitle">Add New Website URL</h4>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form action="{% url 'admin.user.chatbot.upload-document' user_uuid=request.user.uuid  chatbot_id=data.user_chatbots.chat_bot_id upload_type='upload-website' %}" method="post" id="url-form" autocomplete="off">
+          {% csrf_token %}
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-10">
+                <div class="form-floating form-floating-outline">
+                  <input type="url" name="url" id="url" class="form-control" placeholder="Enter Website URL to add the database.">
+                  <label for="url">URL</label>
+                </div>
+              </div>
+              <div class="col-2 d-flex align-items-center justify-content-center">
+                <div class="form-floating form-floating-outline">
+                <button id="add-website" type="submit" class="btn btn-primary btn-lg waves-light waves-effect role-button w-100" data-bs-dismiss="modal">Add URL</button>
+              </div>
+              </div>
+            </div>
+          </div>
+        </form>
+    </div>
+  </div>
+</div>

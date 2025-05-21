@@ -1,0 +1,119 @@
+{% extends 'layout/base.html' %}
+{% load static %}
+{% block title %}Admin Create Chat bot{% endblock %}
+
+{% block content %}
+<style>
+    .center {
+      text-align: center;
+      margin: auto;
+      width: 30%;
+      padding: 10px;
+    }
+    </style>
+    {% include 'layout/partials/ChatBot/chat-head.html' %}
+    {% include 'layout/partials/ChatBot/chatbot-settings-menu.html' %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-4">
+                <h4 class="card-header">AI Settings</h4>
+                <div class="card-body">
+                    <form id="chatbotsettingform" method="POST" action ="{% url 'admin.user.chatbot.hendle-action' user_uuid=request.user.uuid  chatbot_id=data.user_chatbots.chat_bot_id action_type='setting-training' %}">
+                        {% csrf_token %}
+                        <div class="row mt-2 gy-4">
+                            <div class="col-md-6">
+                                <div class="col-md-12 mb-4 d-none" >
+                                    <div class="form-floating form-floating-outline">
+                                        <select id="model" class="select2 form-select" name="llm_model" required disabled>
+                                            <option value="system openai" {% if data.user_chatbots.llm_model == "system openai" %} selected{% endif %}>System OpenAI Key
+                                            </option>
+                                            <option value="private openai" {% if data.user_chatbots.llm_model == "private openai" %} selected{% endif %}>Private OpenAI Key
+                                            </option>
+                                        </select>
+                                        <label for="model">LLM Model</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 mb-4 model2_div d-none">
+                                    <div class="form-floating form-floating-outline">
+                                        <select id="model2" class="select2 form-select " disabled name="model" required >
+                                            <option value="gpt-3.5-turbo" {% if data.model == "gpt-3.5-turbo" %} selected{% endif %}>gpt-3.5-turbo
+                                            </option>
+                                        </select>
+                                        <label for="model">Model</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 mb-4 openai_key_div d-none" d-none>
+                                    <div class="form-floating form-floating-outline">
+                                        <input type="text" class="form-control" id="openai_key" name="openai_key"
+                                               placeholder="Your OpenAI API Key" value="{{data.user_chatbots.openai_key|default:''}}" required >
+                                        <label for="openai_key">OpenAI API Key</label>
+    
+                                    </div>
+                                        <div id="openai_key_message" class="text-danger"></div>
+    
+                                </div>
+                                <div class="col-md-12 mb-4">
+                                    <div class="form-floating form-floating-outline">
+                                        <textarea style="height: 150px;" class="form-control" required name="chatbot_context"
+                                                  id="context">{{ data.user_chatbots.context }}</textarea>
+                                        <label for="context">Prompt</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 mb-4 d-none">
+                                    <div class="form-floating form-floating-outline">
+                                        <select id="model3" class="select2 form-select" name="vector_database" required disabled>
+                                            <option value="chroma" {% if data.user_chatbots.vector_database == "chroma" %} selected{% endif %}>Croma Database
+                                            </option>
+                                            <option value="pinecone" {% if data.user_chatbots.vector_database == "pinecone" %} selected{% endif %}>Pinecone Database
+                                            </option>
+                                        </select>
+                                        <label for="model">Vector DataBase</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 mb-4 myDiv d-none">
+                                    <div class="form-floating form-floating-outline">
+                                        <input type="text" class="form-control" id="pinecone_key" name="pinecone_key" disabled
+                                               placeholder="Your Pinecone API Key" value="{{data.user_chatbots.pinecone_key|default:''}}" required="true">
+                                        <label for="openai_key">Pinecone API Key</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 mb-4 myDiv d-none">
+                                    <div class="form-floating form-floating-outline">
+                                        <input type="text" class="form-control" id="pinecone_env" name="pinecone_env" disabled
+                                               placeholder="Your Pinecone ENV Name" value="{{data.user_chatbots.pinecone_env|default:''}}" required="true">
+                                        <label for="openai_key">Pinecone ENV Name</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 mb-4 myDiv d-none">
+                                    <div class="form-floating form-floating-outline">
+                                        <input type="text" class="form-control" id="pinecone_env" name="pinecone_env" disabled
+                                               placeholder="Your Pinecone ENV Name" value="{{data.user_chatbots.pinecone_env|default:''}}" required="true">
+                                        <label for="openai_key">Pinecone ENV Name</label>
+                                    </div>
+                                </div>
+                             
+                                <div class="col-md-6 d-none">
+                                    <div class="col-md-12 mb-4 myDiv">
+                                        <div class="form-floating form-floating-outline">
+                                            <div id="radiusAmount">
+                                                Temperature ({{data.user_chatbots.temperature}})
+                                            </div>
+                                            <input type="text" name="temperature" value="{{ data.user_chatbots.temperature }}" id="temperature" class="form-control" disabled>
+                                            <div class="wrap">
+                                                <div id="slider"></div>
+                                            </div>
+                                        </div>
+                                    </div>  
+                                </div>
+                        </div>
+                        <div class="mt-4">
+                            <button type="submit" id="settings-submit" class="btn btn-primary me-2">Save changes</button>
+                            <button type="reset" class="btn btn-outline-secondary">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+                <!-- /Account -->
+            </div>
+        </div>
+  </div>
+{% endblock %}

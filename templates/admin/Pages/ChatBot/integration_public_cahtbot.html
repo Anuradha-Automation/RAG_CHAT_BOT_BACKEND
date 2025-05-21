@@ -1,0 +1,27 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <h1>Chatbot Integration</h1>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+  
+  var chatbotId = "{{ cc_id }}"; // Passing the Django variable to JS
+  var base_url = "{{ base_url }}"; // Passing the Django variable to JS
+  window.addEventListener("load", function() {
+    var script = document.createElement("script");
+    script.src = `${base_url}/static/chat-widget/chat-loader.js`;
+    script.setAttribute("chatbot-id", chatbotId);
+    script.setAttribute("base_url", base_url);
+    document.head.appendChild(script);
+});
+  
+  </script>
+</body>
+</html>

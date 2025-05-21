@@ -1,0 +1,148 @@
+.diplayblock {
+    display: none;
+  }
+
+  @media only screen and (max-width: 767px) and (orientation: portrait) {
+    /* Add your styles for mobile portrait mode here */
+    .displaynone {
+      display: none;
+    }
+
+    .diplayblock {
+      display: block;
+    }
+
+    #pcContent {
+      display: none;
+    }
+
+    /* Add any additional styles for portrait mode as needed */
+  }
+
+  /* Additional styles to hide the message on larger screens */
+  @media only screen and (min-width: 768px) {
+    #mobileMessage {
+      display: none;
+    }
+  }
+
+  nav li{list-style: none; padding: 10px 10px; cursor: pointer;}
+        nav li:hover{ color: rgba(75, 105, 176,1); }
+        nav li#user-info{position: absolute; bottom: 0; width: 80%;}
+        nav li#user-info > span{display: block; float: right; font-size: 0.9em; position: relative; opacity: 0.6;}
+        nav li#user-info > span:after{
+          content: '';
+          width: 12px;
+          height: 12px;
+          display: block;
+          position: absolute;
+          background: green;
+          left: -20px; top: 0; bottom: 0;
+          margin: auto;
+          border-radius: 50%;
+        }
+
+        @media (min-width: 1400px) {
+            .toggle{
+                display: none;
+            }
+        }
+
+        .col-6 {
+          flex: 0 0 auto;
+          width: 100%;
+          margin: 0 0 0 12px;
+      }
+
+      :root {
+          --bg-primary: #41444b;
+          --bg-secondary: #52575d;
+          --bg-active: #fddb3a;
+          --cl-text: #f6f4e6;
+      }
+      nav.active {
+          width: 20px;
+      }
+      nav ul li a.toggle {
+          border-bottom: 3px solid var(--bg-primary);
+      }
+
+      .toggle {
+          cursor: pointer;
+          margin-left: 310px;
+
+      }
+
+      @media (max-width: 768px) {
+          header {
+              display: flex;
+              justify-content: space-around;
+              align-items: center;
+              height: 60px;
+              background: var(--bg-secondary);
+              color: var(--cl-text);
+          }
+          header a {
+              color: var(--cl-text)
+          }
+
+          nav {
+              left: -60px;
+          }
+
+          nav.active {
+              left: 0;
+              width: 60%;
+          }
+
+          nav ul li a.toggle {
+              display: none;
+          }
+
+           .toggle {
+              cursor: pointer;
+              margin-left: 734px;
+              display: block;
+              font-size: 20px;
+          }
+
+      }
+
+    @media (max-width: 450px) {
+      .toggle {
+          cursor: pointer;
+          margin-left: 330px;
+          display: block;
+          font-size: 20px;
+      }
+      .align-items-center {
+        align-items: center !important;
+        margin-left: -20px;
+      }
+      .pc-sidebar .pc-navbar > .pc-item {
+        margin: 0 10px;
+        margin-left: -10px;
+      }
+    }
+
+    @media (min-width: 768px) and (max-width: 1024px) {
+      .toggle {
+          cursor: pointer;
+          margin-left: 700px;
+          display: block;
+          font-size: 25px;
+      }
+    }
+
+    @media (min-width: 1024px) and (max-width: 2000px) {
+      .toggle {
+          cursor: pointer;
+          margin-left: 700px;
+          display: none;
+      }
+    }
+
+label.error {
+      color: red;
+  }
+
